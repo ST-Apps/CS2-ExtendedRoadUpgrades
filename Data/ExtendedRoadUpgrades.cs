@@ -65,6 +65,32 @@ namespace ExtendedRoadUpgrades.Data
                 {
                     m_Right = CompositionFlags.Side.WideSidewalk | CompositionFlags.Side.PrimaryBeautification
                 }
+            },
+
+            // Elevated
+            new ExtendedRoadUpgradeModel
+            {
+                Id = "Elevated",
+                Name = new Dictionary<string, string> {
+                    {
+                        "en-US",
+                        "Elevated"
+                    }
+                },
+                Description = new Dictionary<string, string> {
+                    {
+                        "en-US",
+                        "Elevated mode, kind of similar to bridges"
+                    }
+                },
+                m_SetUpgradeFlags = new CompositionFlags
+                {
+                    m_General = CompositionFlags.General.Elevated
+                },
+                m_UnsetUpgradeFlags = new CompositionFlags
+                {
+                    m_Right = CompositionFlags.Side.WideSidewalk | CompositionFlags.Side.PrimaryBeautification
+                }
             }
         };
     }

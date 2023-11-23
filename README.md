@@ -11,7 +11,7 @@ This work is licensed under a
 
 # Cities: Skylines 2 - Extended Road Upgrades
 
-This mod enables both **quays** and **retaining walls** in the Network Upgrade tool.
+This mod enables both **quays**, **retaining walls** and **elevated** upgrade options in the Network Upgrade tool.
 
 > We're in the early stages of C:S2 modding and the tooling is not ready yet so please take this mod as it is and accept any issue.
 >
@@ -30,9 +30,9 @@ Simply extract the release ZIP file to your `BepInEx/plugins` folder.
 
 # Usage
 
-You will find two new icons in the Road Upgrade menu, just after the _Grass_ one.
+You will find new icons in the Road Upgrade menu, just after the _Grass_ one.
 
-Select either the _Quay_ or the _Retaining Wall_ and upgrade your roads as you would with the other available upgrades.
+Select one of them and upgrade your roads as you would with the other available upgrades.
 
 # Known Issues
 
