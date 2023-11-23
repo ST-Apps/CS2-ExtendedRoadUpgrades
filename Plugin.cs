@@ -16,7 +16,11 @@ namespace ExtendedRoadUpgrades
         {
             Logger = base.Logger;
 
+#if !DEBUG
             Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
+#else
+            Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID}[DEBUG] is loaded!");
+#endif
 
             var harmony = Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), MyPluginInfo.PLUGIN_GUID + "_Cities2Harmony");
             var patchedMethods = harmony.GetPatchedMethods().ToArray();
