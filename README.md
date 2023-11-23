@@ -19,16 +19,20 @@ This mod enables both **quays** and **retaining walls** in the Network Upgrade t
 
 [CHANGELOG](./CHANGELOG.md)
 
+# Setup
+
+Simply extract the release ZIP file to your `BepInEx/plugins` folder.
+
+## Requirements
+
+- [Cities: Skylines 2](https://store.steampowered.com/app/949230/Cities_Skylines_II/)
+- [BepInEx-Unity.Mono-win-x64-6.0.0-be.674+82077ec](https://builds.bepinex.dev/projects/bepinex_be)
+
 # Usage
 
 You will find two new icons in the Road Upgrade menu, just after the _Grass_ one.
 
 Select either the _Quay_ or the _Retaining Wall_ and upgrade your roads as you would with the other available upgrades.
-
-# Requirements
-
-- [Cities: Skylines 2](https://store.steampowered.com/app/949230/Cities_Skylines_II/)
-- [BepInEx-Unity.Mono-win-x64-6.0.0-be.674+82077ec](https://builds.bepinex.dev/projects/bepinex_be)
 
 # Known Issues
 
