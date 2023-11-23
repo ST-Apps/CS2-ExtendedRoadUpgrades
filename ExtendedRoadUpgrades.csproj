@@ -1,0 +1,152 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<!-- 
+		Base csproj setup. Change the AssemblyName, RootNamespace and Description to
+		accurately describe your mod.
+		
+		Increment the Version property when you release a new version.
+	-->
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.1</TargetFramework>
+		<AssemblyName>ExtendedRoadUpgrades</AssemblyName>
+		<Description>A mod that I made for Cities: Skylines 2</Description>
+		<Version>0.1.0</Version>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<LangVersion>latest</LangVersion>
+		<RestoreAdditionalProjectSources>
+			https://api.nuget.org/v3/index.json;
+			https://nuget.bepinex.dev/v3/index.json;
+			https://nuget.samboy.dev/v3/index.json
+		</RestoreAdditionalProjectSources>
+		<RootNamespace>ExtendedRoadUpgrades</RootNamespace>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	</PropertyGroup>
+
+	<!--
+		Uncomment this PropertyGroup to let the C# project read DLLs directory from your game directory,
+		and also allow the build to move the mod DLLs into the plugins directory for you
+	-->
+	<PropertyGroup>
+		<Cities2_Location>D:\Games\SteamLibrary\steamapps\common\Cities Skylines II</Cities2_Location>
+	</PropertyGroup>
+	<ItemGroup>
+	  <None Remove="Assets\Media\Game\Icons\RoadUpgradeQuay.svg" />
+	  <None Remove="Assets\Media\Game\Icons\RoadUpgradeQuayFilled.svg" />
+	  <None Remove="Assets\Media\Game\Icons\RoadUpgradeRetainingWall.svg" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Content Include="Assets\Media\Game\Icons\RoadUpgradeQuay.svg" />
+	  <Content Include="Assets\Media\Game\Icons\RoadUpgradeQuayFilled.svg" />
+	  <Content Include="Assets\Media\Game\Icons\RoadUpgradeRetainingWall.svg" />
+	</ItemGroup>
+
+	<!--
+		This is all the references to the DLLs directly from your game directory. The Cities2_Location property
+		above needs to be uncommented for this to work
+	-->
+	<ItemGroup>
+		<Reference Include="Colossal.AssetPipeline"><HintPath>$(Cities2_Location)\Cities2_Data\Managed\Colossal.AssetPipeline.dll</HintPath><Private>False</Private></Reference>
+		<Reference Include="Colossal.AssetPipeline.Native"><HintPath>$(Cities2_Location)\Cities2_Data\Managed\Colossal.AssetPipeline.Native.dll</HintPath><Private>False</Private></Reference>
+		<Reference Include="Colossal.ATL"><HintPath>$(Cities2_Location)\Cities2_Data\Managed\Colossal.ATL.dll</HintPath><Private>False</Private></Reference>
+		<Reference Include="Colossal.CharacterSystem"><HintPath>$(Cities2_Location)\Cities2_Data\Managed\Colossal.CharacterSystem.dll</HintPath><Private>False</Private></Reference>
+		<Reference Include="Colossal.Collections"><HintPath>$(Cities2_Location)\Cities2_Data\Managed\Colossal.Collections.dll</HintPath><Private>False</Private></Reference>
+		<Reference Include="Colossal.Core"><HintPath>$(Cities2_Location)\Cities2_Data\Managed\Colossal.Core.dll</HintPath><Private>False</Private></Reference>
+		<Reference Include="Colossal.IO"><HintPath>$(Cities2_Location)\Cities2_Data\Managed\Colossal.IO.dll</HintPath><Private>False</Private></Reference>
+		<Reference Include="Colossal.IO.AssetDatabase"><HintPath>$(Cities2_Location)\Cities2_Data\Managed\Colossal.IO.AssetDatabase.dll</HintPath><Private>False</Private></Reference>
+		<Reference Include="Colossal.Localization"><HintPath>$(Cities2_Location)\Cities2_Data\Managed\Colossal.Localization.dll</HintPath><Private>False</Private></Reference>
+		<Reference Include="Colossal.Logging"><HintPath>$(Cities2_Location)\Cities2_Data\Managed\Colossal.Logging.dll</HintPath><Private>False</Private></Reference>
+		<Reference Include="Colossal.Mathematics"><HintPath>$(Cities2_Location)\Cities2_Data\Managed\Colossal.Mathematics.dll</HintPath><Private>False</Private></Reference>
+		<Reference Include="Colossal.Mono.Cecil"><HintPath>$(Cities2_Location)\Cities2_Data\Managed\Colossal.Mono.Cecil.dll</HintPath><Private>False</Private></Reference>
+		<Reference Include="Colossal.OdinSerializer"><HintPath>$(Cities2_Location)\Cities2_Data\Managed\Colossal.OdinSerializer.dll</HintPath><Private>False</Private></Reference>
+		<Reference Include="Colossal.Plugins"><HintPath>$(Cities2_Location)\Cities2_Data\Managed\Colossal.Plugins.dll</HintPath><Private>False</Private></Reference>
+		<Reference Include="Colossal.PSI.Common"><HintPath>$(Cities2_Location)\Cities2_Data\Managed\Colossal.PSI.Common.dll</HintPath><Private>False</Private></Reference>
+		<Reference Include="Colossal.PSI.Discord"><HintPath>$(Cities2_Location)\Cities2_Data\Managed\Colossal.PSI.Discord.dll</HintPath><Private>False</Private></Reference>
+		<Reference Include="Colossal.PSI.PdxSdk"><HintPath>$(Cities2_Location)\Cities2_Data\Managed\Colossal.PSI.PdxSdk.dll</HintPath><Private>False</Private></Reference>
+		<Reference Include="Colossal.PSI.Steamworks"><HintPath>$(Cities2_Location)\Cities2_Data\Managed\Colossal.PSI.Steamworks.dll</HintPath><Private>False</Private></Reference>
+		<Reference Include="Colossal.UI"><HintPath>$(Cities2_Location)\Cities2_Data\Managed\Colossal.UI.dll</HintPath><Private>False</Private></Reference>
+		<Reference Include="Colossal.UI.Binding"><HintPath>$(Cities2_Location)\Cities2_Data\Managed\Colossal.UI.Binding.dll</HintPath><Private>False</Private></Reference>
+		<Reference Include="cohtml.Net"><HintPath>$(Cities2_Location)\Cities2_Data\Managed\cohtml.Net.dll</HintPath><Private>False</Private></Reference>
+		<Reference Include="Game"><HintPath>$(Cities2_Location)\Cities2_Data\Managed\Game.dll</HintPath><Private>False</Private></Reference>
+		<Reference Include="UnityEngine">
+			<HintPath>$(Cities2_Location)\Cities2_Data\Managed\UnityEngine.dll</HintPath>
+			<Private>False</Private>
+			<Aliases>CustomTypes</Aliases>
+		</Reference>
+		<Reference Include="UnityEngine.CoreModule">
+			<HintPath>$(Cities2_Location)\Cities2_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+			<Private>False</Private>			
+		</Reference>
+		<Reference Include="Unity.Entities"><HintPath>$(Cities2_Location)\Cities2_Data\Managed\Unity.Entities.dll</HintPath><Private>False</Private></Reference>
+		<Reference Include="Unity.InputSystem"><HintPath>$(Cities2_Location)\Cities2_Data\Managed\Unity.InputSystem.dll</HintPath><Private>False</Private></Reference>
+		<Reference Include="Unity.Mathematics"><HintPath>$(Cities2_Location)\Cities2_Data\Managed\Unity.Mathematics.dll</HintPath><Private>False</Private></Reference>
+		<Reference Include="Unity.Collections"><HintPath>$(Cities2_Location)\Cities2_Data\Managed\Unity.Collections.dll</HintPath><Private>False</Private></Reference>
+		<Reference Include="Unity.Burst"><HintPath>$(Cities2_Location)\Cities2_Data\Managed\Unity.Burst.dll</HintPath><Private>False</Private></Reference>
+		<Reference Include="Unity.RenderPipelines.HighDefinition.Runtime"><HintPath> $(Cities2_Location)\Cities2_Data\Managed\Unity.RenderPipelines.HighDefinition.Runtime.dll</HintPath><Private>False</Private></Reference>
+	</ItemGroup>
+
+	<!--
+		If you want to embed things directly into your mod, instead of shipping multiple files
+	<ItemGroup>
+	  <EmbeddedResource Include="./resources/my_pretty_embedded_image.jpg" />
+	</ItemGroup>
+	-->
+
+	<!--
+		This ItemGroup is used in CI for the game DLLs.
+		Make sure you have a private `libcs2` repository with the appropriate DLLs for this to work.
+		DO NOT make the proprietary DLLs for the game public, as the files are owned by PDX/CO. 
+	-->
+	<ItemGroup>
+		<Reference Include="Game">
+			<HintPath>../libcs2/Game.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="Colossal.Core">
+			<HintPath>../libcs2/Colossal.Core.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="Colossal.UI">
+			<HintPath>../libcs2/Colossal.UI.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="Colossal.IO.AssetDatabase">
+			<HintPath>../libcs2/Colossal.IO.AssetDatabase.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="Colossal.Core">
+			<HintPath>../libcs2/Colossal.Core.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="Unity.Entities">
+			<HintPath>../libcs2/Unity.Entities.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="Unity.InputSystem">
+			<HintPath>../libcs2/Unity.InputSystem.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+	</ItemGroup>
+
+	<!--
+		Everything related to BepInEx and Harmony
+	-->
+	<ItemGroup>
+		<PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
+		<PackageReference Include="BepInEx.Unity.Mono" Version="6.0.0-be.*" IncludeAssets="compile" />
+		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
+		<PackageReference Include="HarmonyX" Version="2.10.2"></PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+	</ItemGroup>
+
+	<!--
+		This will try to copy the resulting DLLs from builds directly into your game directory,
+		as long as we're not in CI
+	-->
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(CI)' != 'true'">
+		<Exec Command="if not exist &quot;$(Cities2_Location)\BepInEx\plugins\$(ProjectName)&quot; mkdir &quot;$(Cities2_Location)\BepInEx\plugins\$(ProjectName)&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)0Harmony.dll&quot; &quot;$(Cities2_Location)\BepInEx\plugins\$(ProjectName)\0Harmony.dll&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)$(ProjectName).dll&quot; &quot;$(Cities2_Location)\BepInEx\plugins\$(ProjectName)\$(ProjectName).dll&quot;" />
+	</Target>
+</Project>
