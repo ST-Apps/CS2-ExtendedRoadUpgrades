@@ -1,4 +1,7 @@
+![GitHub release (by tag)](https://img.shields.io/github/downloads/ST-Apps/CS2-ExtendedRoadUpgrades/v1.0.0/total?logoColor=lightgrey)
 ﻿[![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
+![Static Badge](https://img.shields.io/badge/PayPal-donate-blue?logo=paypal&link=https%3A%2F%2Fpaypal.me%2FSTApps)
+
 
 This work is licensed under a
 [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License][cc-by-nc-sa].
