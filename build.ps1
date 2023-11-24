@@ -34,17 +34,27 @@ function BuildAndPackage($version, $configuration) {
          $outputName += "_" + $configuration
     }
 
-    $outputDir = $OutputPath + "\" + $outputName
+    $outputDir = $OutputPath + "\" + $outputName + "\" + $ProjectName
 
     Write-Host "Building for [$ProjectName-$ProjectVersion] with args [$version, $configuration], output: $outputDir"
     dotnet build $CsprojPath.FullName /p:BepInExVersion=$version -c $configuration -o "$outputDir"
     
     # Define the contents for the ZIP files
-    $filesToInclude = @("$outputDir\0Harmony.dll", "$outputDir\$ProjectName.dll", "$outputDir\Icons")
+    $filesToInclude = @("0Harmony.dll", "$ProjectName.dll", "Icons")
+    $filesToDelete = Get-ChildItem -Path $outputDir -Exclude $filesToInclude
+
+    # Delete files
+    foreach ($file in $filesToDelete) {
+        Remove-Item -Path $file.FullName -Force
+    }
+
+    # Move icons
+    Get-ChildItem -Path "$outputDir\Icons" | Move-Item -Destination "$outputDir" -Force
+    Remove-Item -Path "$outputDir\Icons" -Force
 
     # Create a zip file
     $zipFileName = $outputName + ".zip"
-    Compress-Archive -Path $filesToInclude -DestinationPath "$ReleasesPath\$zipFileName" -Force
+    Compress-Archive -Path "$outputDir" -DestinationPath "$ReleasesPath\$zipFileName" -Force
 }
 
 # Iterate over versions and configurations
@@ -55,4 +65,4 @@ foreach ($version in $Versions) {
 }
 
 # Delete the entire "output" folder
-Remove-Item -Path $OutputPath -Recurse -Force
+#Remove-Item -Path $OutputPath -Recurse -Force
