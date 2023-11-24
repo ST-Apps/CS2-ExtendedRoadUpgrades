@@ -7,6 +7,10 @@
 - Assets icon are not loaded but they show the Grass upgrade asset instead
 - Retaining walls will generate empty spaces on connecting nodes
 
+# 0.3.0
+
+- [FIX] Improved replacement modes not allowing to switch between quay and retaining walls
+
 # 0.2.0
 
 - [ADD] Added support for elevated roads

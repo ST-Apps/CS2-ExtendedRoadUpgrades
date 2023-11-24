@@ -6,6 +6,8 @@ using Colossal.Json;
 using Unity.Entities;
 using System.Threading;
 using ExtendedRoadUpgrades.Extensions;
+using Colossal.Entities;
+using UnityEngine;
 
 namespace ExtendedRoadUpgrades.Patches
 {
@@ -38,6 +40,9 @@ namespace ExtendedRoadUpgrades.Patches
                 // We can now clone the "Grass" prefab to customize it later
                 var grassUpgradePrefab = roadUpgradesAssetCollection.m_Prefabs.FirstOrDefault(p => p.name == "Grass");
 
+                var grassUpgradePrefabNetUpgrade = grassUpgradePrefab.GetComponent<NetUpgrade>();
+                Plugin.Logger.LogDebug($"grassUpgradePrefabNetUpgrade: {grassUpgradePrefabNetUpgrade.m_SetState.ToJSONString()} - {grassUpgradePrefabNetUpgrade.m_UnsetState.ToJSONString()}");
+
                 // Iterate over the available upgrade modes and clone the Grass prefab
                 foreach (var upgradeMode in Data.ExtendedRoadUpgrades.Modes)
                 {
@@ -46,7 +51,7 @@ namespace ExtendedRoadUpgrades.Patches
                     clonedGrassPrefab.UpdateThumbnailUrl();
 
                     // Finally, add the cloned prefab to the collection
-                    roadUpgradesAssetCollection.m_Prefabs.Add(clonedGrassPrefab);                    
+                    roadUpgradesAssetCollection.m_Prefabs.Add(clonedGrassPrefab);
                     Plugin.Logger.LogInfo($"clonedGrassPrefabData[{upgradeMode.Id}]: Added to the AssetCollection [thumbnail: {clonedGrassPrefab.thumbnailUrl}].");
                 }
             }
@@ -86,6 +91,7 @@ namespace ExtendedRoadUpgrades.Patches
                 // with left-hand side driving).
                 var grassUpgradePrefab = roadUpgradesAssetCollection.m_Prefabs.FirstOrDefault(p => p.name == "Grass");
                 var grassUpgradeData = prefabSystem.GetComponentData<PlaceableNetData>(grassUpgradePrefab);
+                var grassUpgradePrefabNetUpgrade = grassUpgradePrefab.GetComponent<NetUpgrade>();
 
                 Plugin.Logger.LogDebug($"grassUpgradeData: {grassUpgradeData.ToJSONString()}");
 
@@ -98,13 +104,24 @@ namespace ExtendedRoadUpgrades.Patches
                         var clonedGrassPrefab = roadUpgradesAssetCollection.m_Prefabs.FirstOrDefault(p => p.name == upgradeMode.Id);
                         var clonedGrassPrefabData = prefabSystem.GetComponentData<PlaceableNetData>(clonedGrassPrefab);
 
-                        Plugin.Logger.LogDebug($"clonedGrassPrefabData[{upgradeMode.Id}]: {clonedGrassPrefabData.ToJSONString()}");
+                        Plugin.Logger.LogDebug($"clonedGrassPrefabData[{upgradeMode.Id}]: {clonedGrassPrefabData.ToJSONString()}");                        
 
                         // Update the flags
                         clonedGrassPrefabData.m_SetUpgradeFlags = upgradeMode.m_SetUpgradeFlags;
-
                         // TODO: this works even without the unset flags, keeping them there just in case
                         clonedGrassPrefabData.m_UnsetUpgradeFlags = upgradeMode.m_UnsetUpgradeFlags;
+
+                        // Update the component
+                        // TODO: not sure how this works yet
+                        //Plugin.Logger.LogDebug($"BEFORE: {clonedGrassPrefab.GetComponent<NetUpgrade>().m_SetState.ToJSONString()}");
+                        //var clonedGrassUpgradePrefabNetUpgrade = GameObject.Instantiate<NetUpgrade>(grassUpgradePrefabNetUpgrade);
+                        //clonedGrassUpgradePrefabNetUpgrade.name = $"{upgradeMode.Id}NetUpgrade";
+                        //clonedGrassUpgradePrefabNetUpgrade.prefab = clonedGrassPrefab;
+                        //clonedGrassUpgradePrefabNetUpgrade.m_SetState = upgradeMode.m_SetState.ToArray();
+                        //clonedGrassUpgradePrefabNetUpgrade.m_UnsetState = upgradeMode.m_UnsetState.ToArray();
+                        //prefabSystem.EntityManager.RemoveComponent<NetUpgrade>(prefabSystem.GetEntity(clonedGrassPrefab));
+                        //clonedGrassPrefab.AddComponentFrom<NetUpgrade>(clonedGrassUpgradePrefabNetUpgrade);
+                        //Plugin.Logger.LogDebug($"AFTER: {clonedGrassPrefab.GetComponent<NetUpgrade>().m_SetState.ToJSONString()}");
 
                         // Persist changes to the EntityManager
                         prefabSystem.EntityManager.SetComponentData(prefabSystem.GetEntity(clonedGrassPrefab), clonedGrassPrefabData);

@@ -37,7 +37,21 @@ namespace ExtendedRoadUpgrades.Data
                 },
                 m_UnsetUpgradeFlags = new CompositionFlags
                 {
-                    m_Right = CompositionFlags.Side.WideSidewalk | CompositionFlags.Side.PrimaryBeautification
+                    m_General = CompositionFlags.General.Elevated,
+                    m_Right = CompositionFlags.Side.WideSidewalk | CompositionFlags.Side.PrimaryBeautification | CompositionFlags.Side.Lowered
+                },
+
+                // TODO: not sure how this works yet
+                m_SetState = new[]
+                {
+                    NetPieceRequirements.Raised
+                },
+                m_UnsetState = new[]
+                {
+                    NetPieceRequirements.Lowered,
+                    NetPieceRequirements.Elevated,
+                    NetPieceRequirements.LowTransition,
+                    NetPieceRequirements.OppositeLowTransition
                 }
             },
 
@@ -63,7 +77,21 @@ namespace ExtendedRoadUpgrades.Data
                 },
                 m_UnsetUpgradeFlags = new CompositionFlags
                 {
-                    m_Right = CompositionFlags.Side.WideSidewalk | CompositionFlags.Side.PrimaryBeautification
+                    m_General = CompositionFlags.General.Elevated,
+                    m_Right = CompositionFlags.Side.WideSidewalk | CompositionFlags.Side.PrimaryBeautification | CompositionFlags.Side.Raised
+                },
+
+                // TODO: not sure how this works yet
+                m_SetState = new[]
+                {
+                    NetPieceRequirements.Lowered
+                },
+                m_UnsetState = new[]
+                {
+                    NetPieceRequirements.Raised,
+                    NetPieceRequirements.Elevated,
+                    NetPieceRequirements.LowTransition,
+                    NetPieceRequirements.OppositeLowTransition
                 }
             },
 
@@ -89,7 +117,21 @@ namespace ExtendedRoadUpgrades.Data
                 },
                 m_UnsetUpgradeFlags = new CompositionFlags
                 {
-                    m_Right = CompositionFlags.Side.WideSidewalk | CompositionFlags.Side.PrimaryBeautification
+                    m_Right = CompositionFlags.Side.WideSidewalk | CompositionFlags.Side.PrimaryBeautification | CompositionFlags.Side.Raised | CompositionFlags.Side.Lowered,
+                    m_Left = CompositionFlags.Side.WideSidewalk | CompositionFlags.Side.PrimaryBeautification | CompositionFlags.Side.Raised | CompositionFlags.Side.Lowered
+                },
+
+                // TODO: not sure how this works yet
+                m_SetState = new[]
+                {
+                    NetPieceRequirements.Elevated
+                },
+                m_UnsetState = new[]
+                {
+                    NetPieceRequirements.Raised,
+                    NetPieceRequirements.Lowered,
+                    NetPieceRequirements.LowTransition,
+                    NetPieceRequirements.OppositeLowTransition
                 }
             }
         };

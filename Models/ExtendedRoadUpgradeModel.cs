@@ -33,5 +33,15 @@ namespace ExtendedRoadUpgrades.Models
         {
             get; set;
         }
+
+        public IEnumerable<NetPieceRequirements> m_SetState
+        {
+            get; set;
+        }
+
+        public IEnumerable<NetPieceRequirements> m_UnsetState
+        {
+            get; set;
+        }
     }
 }
