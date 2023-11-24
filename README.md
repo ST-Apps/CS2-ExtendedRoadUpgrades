@@ -1,8 +1,7 @@
 ![GitHub all releases](https://img.shields.io/github/downloads/ST-Apps/CS2-ExtendedRoadUpgrades/total)
 ![GitHub release (latest by SemVer including pre-releases)](https://img.shields.io/github/downloads-pre/ST-Apps/CS2-ExtendedRoadUpgrades/latest/total)
 ﻿[![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
-![Static Badge](https://img.shields.io/badge/PayPal-donate-blue?logo=paypal&link=https%3A%2F%2Fpaypal.me%2FSTApps)
-
+[![Static Badge](https://img.shields.io/badge/PayPal-donate-blue?logo=paypal&link=https%3A%2F%2Fpaypal.me%2FSTApps)](https://www.paypal.me/STApps)
 
 This work is licensed under a
 [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License][cc-by-nc-sa].
