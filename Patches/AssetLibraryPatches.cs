@@ -5,9 +5,8 @@ using Game.Prefabs;
 using Colossal.Json;
 using Unity.Entities;
 using System.Threading;
-using ExtendedRoadUpgrades.Extensions;
-using Colossal.Entities;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace ExtendedRoadUpgrades.Patches
 {
@@ -38,17 +37,19 @@ namespace ExtendedRoadUpgrades.Patches
             if (roadUpgradesAssetCollection != null && roadUpgradesAssetCollection.m_Prefabs.Any())
             {
                 // We can now clone the "Grass" prefab to customize it later
-                var grassUpgradePrefab = roadUpgradesAssetCollection.m_Prefabs.FirstOrDefault(p => p.name == "Grass");
+                var grassUpgradePrefab = roadUpgradesAssetCollection.m_Prefabs.FirstOrDefault(p => p.name == "Grass") as FencePrefab;
 
                 var grassUpgradePrefabNetUpgrade = grassUpgradePrefab.GetComponent<NetUpgrade>();
                 Plugin.Logger.LogDebug($"grassUpgradePrefabNetUpgrade: {grassUpgradePrefabNetUpgrade.m_SetState.ToJSONString()} - {grassUpgradePrefabNetUpgrade.m_UnsetState.ToJSONString()}");
 
+                var grassUpgradePrefabUIObject = grassUpgradePrefab.GetComponent<UIObject>();
+                Plugin.Logger.LogDebug($"grassUpgradePrefabUIObject: {grassUpgradePrefabUIObject.m_Icon} - {grassUpgradePrefabUIObject.m_LargeIcon}");
+
                 // Iterate over the available upgrade modes and clone the Grass prefab
                 foreach (var upgradeMode in Data.ExtendedRoadUpgrades.Modes)
                 {
-                    var clonedGrassPrefab = UnityEngine.Object.Instantiate(grassUpgradePrefab);
+                    var clonedGrassPrefab = Object.Instantiate(grassUpgradePrefab);                    
                     clonedGrassPrefab.name = upgradeMode.Id;
-                    clonedGrassPrefab.UpdateThumbnailUrl();
 
                     // Finally, add the cloned prefab to the collection
                     roadUpgradesAssetCollection.m_Prefabs.Add(clonedGrassPrefab);
@@ -90,10 +91,13 @@ namespace ExtendedRoadUpgrades.Patches
                 // side of the road, so we only need to deal with the right side (hoping that this is not messed up
                 // with left-hand side driving).
                 var grassUpgradePrefab = roadUpgradesAssetCollection.m_Prefabs.FirstOrDefault(p => p.name == "Grass");
-                var grassUpgradeData = prefabSystem.GetComponentData<PlaceableNetData>(grassUpgradePrefab);
-                var grassUpgradePrefabNetUpgrade = grassUpgradePrefab.GetComponent<NetUpgrade>();
 
-                Plugin.Logger.LogDebug($"grassUpgradeData: {grassUpgradeData.ToJSONString()}");
+                // Get extra components that need to be patched
+                var grassUpgradePrefabNetUpgrade = grassUpgradePrefab.GetComponent<NetUpgrade>();
+                var grassUpgradePrefabUIObject = grassUpgradePrefab.GetComponent<UIObject>();
+
+                // Get extra components data that need to be patched
+                var grassUpgradeData = prefabSystem.GetComponentData<PlaceableNetData>(grassUpgradePrefab);
 
                 if (grassUpgradeData.m_SetUpgradeFlags.m_Right.HasFlag(CompositionFlags.Side.PrimaryBeautification))
                 {
@@ -104,12 +108,24 @@ namespace ExtendedRoadUpgrades.Patches
                         var clonedGrassPrefab = roadUpgradesAssetCollection.m_Prefabs.FirstOrDefault(p => p.name == upgradeMode.Id);
                         var clonedGrassPrefabData = prefabSystem.GetComponentData<PlaceableNetData>(clonedGrassPrefab);
 
-                        Plugin.Logger.LogDebug($"clonedGrassPrefabData[{upgradeMode.Id}]: {clonedGrassPrefabData.ToJSONString()}");                        
-
                         // Update the flags
                         clonedGrassPrefabData.m_SetUpgradeFlags = upgradeMode.m_SetUpgradeFlags;
                         // TODO: this works even without the unset flags, keeping them there just in case
                         clonedGrassPrefabData.m_UnsetUpgradeFlags = upgradeMode.m_UnsetUpgradeFlags;
+
+                        // Update the UI component.
+                        // To avoid impacting the Grass prefab we need to replace the UIObject with
+                        // a fresh instance. Every property besides name and icon can be copied over.
+                        clonedGrassPrefab.Remove<UIObject>();
+
+                        var clonedGrassUpgradePrefabUIObject = ScriptableObject.CreateInstance<UIObject>();
+                        clonedGrassUpgradePrefabUIObject.m_Icon = grassUpgradePrefabUIObject.m_Icon.Replace("Grass", upgradeMode.Id);
+                        clonedGrassUpgradePrefabUIObject.m_IsDebugObject = grassUpgradePrefabUIObject.m_IsDebugObject;
+                        clonedGrassUpgradePrefabUIObject.m_Priority = grassUpgradePrefabUIObject.m_Priority;
+                        clonedGrassUpgradePrefabUIObject.m_Group = grassUpgradePrefabUIObject.m_Group;
+                        clonedGrassUpgradePrefabUIObject.active = grassUpgradePrefabUIObject.active;
+                        clonedGrassUpgradePrefabUIObject.name = grassUpgradePrefabUIObject.name.Replace("Grass", upgradeMode.Id);
+                        clonedGrassPrefab.AddComponentFrom<UIObject>(clonedGrassUpgradePrefabUIObject);
 
                         // Update the component
                         // TODO: not sure how this works yet

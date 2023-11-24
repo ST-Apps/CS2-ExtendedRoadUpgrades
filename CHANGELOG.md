@@ -4,8 +4,11 @@
 
 ## Known Issues
 
-- Assets icon are not loaded but they show the Grass upgrade asset instead
 - Retaining walls will generate empty spaces on connecting nodes
+
+# 1.0.0
+
+- [FIX] Replaced in-game Grass icon with dedicated icons for each upgrade mode
 
 # 0.3.0
 

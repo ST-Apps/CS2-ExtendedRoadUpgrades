@@ -41,10 +41,11 @@ Select one of them and upgrade your roads as you would with the other available 
 
 # Known Issues
 
-- Assets icon are not loaded but they show the Grass upgrade asset instead
 - Retaining walls will generate empty spaces on connecting nodes
 
 # Thanks
 
 Many thanks to the people of [Cities 2 Modding](https://discord.gg/DZaSSnRG) and [Cities: Skylines Modding](https://discord.gg/ey6kT5kf) Discord
 communities for their help and pointers that helped me developing this mod.
+
+Special thanks to [Chamëleon TBN](https://github.com/chameleon-tbn) for his beautiful icons and to [Captain of Coit](https://github.com/Captain-Of-Coit) for his mod template.

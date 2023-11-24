@@ -133,7 +133,7 @@ namespace ExtendedRoadUpgrades.Systems
         {
             if (GetRaycastResult(out Entity entity, out RaycastHit hit))
             {
-                if (base.EntityManager.HasComponent<Game.Net.Node>(entity) && base.EntityManager.HasComponent<Edge>(hit.m_HitEntity))
+                if (EntityManager.HasComponent<Game.Net.Node>(entity) && EntityManager.HasComponent<Edge>(hit.m_HitEntity))
                 {
                     entity = hit.m_HitEntity;
                 }
@@ -150,7 +150,7 @@ namespace ExtendedRoadUpgrades.Systems
         {
             if (GetRaycastResult(out var entity, out var hit, out forceUpdate))
             {
-                if (base.EntityManager.HasComponent<Game.Net.Node>(entity) && base.EntityManager.HasComponent<Edge>(hit.m_HitEntity))
+                if (EntityManager.HasComponent<Game.Net.Node>(entity) && EntityManager.HasComponent<Edge>(hit.m_HitEntity))
                 {
                     entity = hit.m_HitEntity;
                 }

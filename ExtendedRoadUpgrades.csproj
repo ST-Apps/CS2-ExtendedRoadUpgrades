@@ -11,7 +11,7 @@
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<AssemblyName>ExtendedRoadUpgrades</AssemblyName>
 		<Description>A mod that enables multiple upgrade options for your roads.</Description>
-		<Version>0.3.0</Version>
+		<Version>1.0.0</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>latest</LangVersion>
 		<RestoreAdditionalProjectSources>
@@ -31,14 +31,20 @@
 		<Cities2_Location>D:\Games\SteamLibrary\steamapps\common\Cities Skylines II</Cities2_Location>
 	</PropertyGroup>
 	<ItemGroup>
-	  <None Remove="Assets\Media\Game\Icons\RoadUpgradeQuay.svg" />
-	  <None Remove="Assets\Media\Game\Icons\RoadUpgradeQuayFilled.svg" />
-	  <None Remove="Assets\Media\Game\Icons\RoadUpgradeRetainingWall.svg" />
+	  <None Remove="Icons\Elevated.svg" />
+	  <None Remove="Icons\Quay.svg" />
+	  <None Remove="Icons\RetainingWall.svg" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Content Include="Assets\Media\Game\Icons\RoadUpgradeQuay.svg" />
-	  <Content Include="Assets\Media\Game\Icons\RoadUpgradeQuayFilled.svg" />
-	  <Content Include="Assets\Media\Game\Icons\RoadUpgradeRetainingWall.svg" />
+	  <Content Include="Icons\Quay.svg">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Icons\RetainingWall.svg">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Icons\Elevated.svg">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
 	</ItemGroup>
 
 	<!--
@@ -147,6 +153,6 @@
 		as long as we're not in CI
 	-->
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(CI)' != 'true'">
-		<Exec Command="if not exist &quot;$(Cities2_Location)\BepInEx\plugins\$(ProjectName)&quot; mkdir &quot;$(Cities2_Location)\BepInEx\plugins\$(ProjectName)&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)0Harmony.dll&quot; &quot;$(Cities2_Location)\BepInEx\plugins\$(ProjectName)\0Harmony.dll&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)$(ProjectName).dll&quot; &quot;$(Cities2_Location)\BepInEx\plugins\$(ProjectName)\$(ProjectName).dll&quot;" />
+		<Exec Command="if not exist &quot;$(Cities2_Location)\BepInEx\plugins\$(ProjectName)&quot; mkdir &quot;$(Cities2_Location)\BepInEx\plugins\$(ProjectName)&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)0Harmony.dll&quot; &quot;$(Cities2_Location)\BepInEx\plugins\$(ProjectName)\0Harmony.dll&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)$(ProjectName).dll&quot; &quot;$(Cities2_Location)\BepInEx\plugins\$(ProjectName)\$(ProjectName).dll&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)Icons&quot; &quot;$(Cities2_Location)\BepInEx\plugins\$(ProjectName)\&quot;" />
 	</Target>
 </Project>
