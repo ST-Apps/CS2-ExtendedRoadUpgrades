@@ -6,6 +6,10 @@
 
 - Retaining walls will generate empty spaces on connecting nodes
 
+# 1.0.2
+
+- [FIX][BepInEx 5] Icons now load properly
+
 # 1.0.1
 
 - [ADD] Added support for BepInEx 5
