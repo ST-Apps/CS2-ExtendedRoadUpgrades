@@ -1,4 +1,4 @@
-![GitHub release (by tag)](https://img.shields.io/github/downloads/ST-Apps/CS2-ExtendedRoadUpgrades/v1.0.0/total?logoColor=lightgrey)
+![GitHub all releases](https://img.shields.io/github/downloads/ST-Apps/CS2-ExtendedRoadUpgrades/total)
 ﻿[![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
 ![Static Badge](https://img.shields.io/badge/PayPal-donate-blue?logo=paypal&link=https%3A%2F%2Fpaypal.me%2FSTApps)
 
@@ -26,7 +26,16 @@ This mod enables both **quays**, **retaining walls** and **elevated** upgrade op
 
 # Setup
 
-Simply download the release from the [releases](https://github.com/ST-Apps/CS2-ExtendedRoadUpgrades/releases) page and extract the ZIP file to your `BepInEx/plugins` folder.
+Each release will contain 4 different download zips:
+- `ExtendedRoadUpgrades_<MOD VERSION>-BepInEx5.zip`
+- `ExtendedRoadUpgrades_<MOD VERSION>-BepInEx5_Debug.zip`
+- `ExtendedRoadUpgrades_<MOD VERSION>-BepInEx6.zip`
+- `ExtendedRoadUpgrades_<MOD VERSION>-BepInEx6_Debug.zip`
+
+> [!TIP]
+> `Debug` versions can be helpful to have extended logging in case of errors, they're not intended for daily usage
+
+Simply download the release that matches your BepInEx version from the [releases](https://github.com/ST-Apps/CS2-ExtendedRoadUpgrades/releases) page and extract the ZIP file to your `BepInEx/plugins` folder.
 
 > [!TIP]
 > If you want to have some debug output, please download the `_Debug.zip` version from the releases page.
@@ -34,7 +43,9 @@ Simply download the release from the [releases](https://github.com/ST-Apps/CS2-E
 ## Requirements
 
 - [Cities: Skylines 2](https://store.steampowered.com/app/949230/Cities_Skylines_II/)
-- [BepInEx-Unity.Mono-win-x64-6.0.0-be.674+82077ec](https://builds.bepinex.dev/projects/bepinex_be)
+- BepInEx, either v5 or v6
+	- [BepInEx 5.4.22](https://github.com/BepInEx/BepInEx/releases/tag/v5.4.22)
+	- [BepInEx-Unity.Mono-win-x64-6.0.0-be.674+82077ec](https://builds.bepinex.dev/projects/bepinex_be)
 
 # Usage
 

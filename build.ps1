@@ -29,9 +29,9 @@ $BuildConfigurations = @("Release", "Debug")
 
 # Function to build and package for a specific version and configuration
 function BuildAndPackage($version, $configuration) {
-    $outputName = $ProjectName + "_v" + $ProjectVersion + "-BepInEx" + $version + "_"
+    $outputName = $ProjectName + "_v" + $ProjectVersion + "-BepInEx" + $version
     if ($configuration -ne "Release"){
-         $outputName += $configuration
+         $outputName += "_" + $configuration
     }
 
     $outputDir = $OutputPath + "\" + $outputName
