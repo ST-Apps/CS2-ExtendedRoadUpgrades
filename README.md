@@ -38,9 +38,6 @@ Each release will contain 4 different download zips:
 
 Simply download the release that matches your BepInEx version from the [releases](https://github.com/ST-Apps/CS2-ExtendedRoadUpgrades/releases) page and extract the ZIP file to your `BepInEx/plugins` folder.
 
-> [!TIP]
-> If you want to have some debug output, please download the `_Debug.zip` version from the releases page.
-
 ## Requirements
 
 - [Cities: Skylines 2](https://store.steampowered.com/app/949230/Cities_Skylines_II/)
