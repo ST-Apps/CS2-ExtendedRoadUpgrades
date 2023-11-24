@@ -11,17 +11,22 @@ This work is licensed under a
 
 # Cities: Skylines 2 - Extended Road Upgrades
 
+> [!IMPORTANT]  
+> We're in the early stages of C:S2 modding and the tooling is not ready yet so please take this mod as it is and accept any issue.
+
 This mod enables both **quays**, **retaining walls** and **elevated** upgrade options in the Network Upgrade tool.
 
-> We're in the early stages of C:S2 modding and the tooling is not ready yet so please take this mod as it is and accept any issue.
->
+> [!WARNING]  
 > This mod might mess up your save game. If this happens and some of your roads are acting weird you can bulldoze and recreate them to fix any issue.
 
 [CHANGELOG](./CHANGELOG.md)
 
 # Setup
 
-Simply extract the release ZIP file to your `BepInEx/plugins` folder.
+Simply download the release from the [releases](https://github.com/ST-Apps/CS2-ExtendedRoadUpgrades/releases) page and extract the ZIP file to your `BepInEx/plugins` folder.
+
+> [!TIP]
+> If you want to have some debug output, please download the `_Debug.zip` version from the releases page.
 
 ## Requirements
 
