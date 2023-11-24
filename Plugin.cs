@@ -1,11 +1,14 @@
 ﻿using System.Linq;
 using System.Reflection;
-using BepInEx.Unity.Mono;
 using BepInEx;
 using HarmonyLib;
 using BepInEx.Logging;
 using System.IO;
 using System;
+
+#if BEPINEX_V6
+    using BepInEx.Unity.Mono;
+#endif
 
 namespace ExtendedRoadUpgrades
 {
