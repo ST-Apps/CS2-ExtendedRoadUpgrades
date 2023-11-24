@@ -6,6 +6,10 @@
 
 - Retaining walls will generate empty spaces on connecting nodes
 
+# 1.0.1
+
+- [ADD] Added support for BepInEx 5
+
 # 1.0.0
 
 - [FIX] Replaced in-game Grass icon with dedicated icons for each upgrade mode
