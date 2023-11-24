@@ -95,9 +95,13 @@ namespace ExtendedRoadUpgrades
             }
         }
 
+#if BEPINEX_V6
+        // TODO: this gets called on BepInEx5 just after Awake, causing icons to be deleted as soon as the mod starts.
+        // For this reason this method is added only when on BepInEx 6.
         private void OnDestroy()
         {
             HandleIcons(true);
         }
+#endif
     }
 }
