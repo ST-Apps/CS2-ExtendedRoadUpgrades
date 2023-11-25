@@ -6,6 +6,11 @@
 
 - Retaining walls will generate empty spaces on connecting nodes
 
+# 1.1.1
+
+- [FIX] Completely rewritten for increased stability and reliability
+- [FIX] Improved UI handling, copying icons on mod's startup is no needed anymore
+
 # 1.0.2
 
 - [FIX][BepInEx 5] Icons now load properly
