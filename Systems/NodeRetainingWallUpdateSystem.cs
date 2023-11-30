@@ -395,17 +395,21 @@ namespace ExtendedRoadUpgrades.Systems
                     // TODO: implement proper logic based on different cases rather than removing LowTransition regardless of the scenario
                     return false;
 
-                UpgradeFlags(ref startNodeComposition, default, new CompositionFlags
+                if (startNodeComposition.m_Flags.m_Left.HasFlag(CompositionFlags.Side.Lowered) ||
+                    endNodeComposition.m_Flags.m_Left.HasFlag(CompositionFlags.Side.Lowered))
                 {
-                    m_Left = CompositionFlags.Side.LowTransition,
-                    m_Right = CompositionFlags.Side.LowTransition,
-                });
+                    UpgradeFlags(ref startNodeComposition, default, new CompositionFlags
+                    {
+                        m_Left = CompositionFlags.Side.LowTransition,
+                        m_Right = CompositionFlags.Side.LowTransition,
+                    });
 
-                UpgradeFlags(ref endNodeComposition, default, new CompositionFlags
-                {
-                    m_Left = CompositionFlags.Side.LowTransition,
-                    m_Right = CompositionFlags.Side.LowTransition,
-                });
+                    UpgradeFlags(ref endNodeComposition, default, new CompositionFlags
+                    {
+                        m_Left = CompositionFlags.Side.LowTransition,
+                        m_Right = CompositionFlags.Side.LowTransition,
+                    });
+                }
 
                 return true;
             }
