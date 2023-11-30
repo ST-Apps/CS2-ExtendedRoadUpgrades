@@ -6,6 +6,10 @@
 
 > Please see the official [issue tracker](https://github.com/ST-Apps/CS2-ExtendedRoadUpgrades/issues).
 
+# 1.2.3
+
+- [FIX] Potential fix for some rare exception when selecting game tools
+
 # 1.2.2
 
 Utility release to bump Thunderstore packages.

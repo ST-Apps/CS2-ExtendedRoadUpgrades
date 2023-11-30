@@ -67,9 +67,9 @@ namespace ExtendedRoadUpgrades.Systems
         private void UpdateCanUpdate()
         {
             _canUpdate = _currentTool is NetToolSystem &&
-                Data.ExtendedRoadUpgrades.Modes.Any(m => m.Id == _currentNetPrefab.name);
+                Data.ExtendedRoadUpgrades.Modes.Any(m => m.Id == _currentNetPrefab?.name);
 
-            Plugin.Logger.LogDebug($"[{nameof(NodeRetainingWallUpdateSystem)}.{nameof(UpdateCanUpdate)}] Setting canUpdate to {_canUpdate} because Tool is {_currentTool} and Prefab is {_currentNetPrefab.name}.");
+            Plugin.Logger.LogDebug($"[{nameof(NodeRetainingWallUpdateSystem)}.{nameof(UpdateCanUpdate)}] Setting canUpdate to {_canUpdate} because Tool is {_currentTool} and Prefab is {_currentNetPrefab?.name}.");
         }
 
         private void OnPrefabChanged(PrefabBase prefabBase)
