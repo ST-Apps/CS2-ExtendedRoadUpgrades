@@ -6,6 +6,10 @@
 
 > Please see the official [issue tracker](https://github.com/ST-Apps/CS2-ExtendedRoadUpgrades/issues).
 
+# 1.2.2
+
+Utility release to bump Thunderstore packages.
+
 # 1.2.1
 
 - [FIX] Elevated roads being turned into retaining walls with 1.2.0
