@@ -52,9 +52,49 @@ function BuildAndPackage($version, $configuration) {
     Get-ChildItem -Path "$outputDir\Icons" | Move-Item -Destination "$outputDir" -Force
     Remove-Item -Path "$outputDir\Icons" -Force
 
+    # If on BepInEx5 and Release we also add Thunderstore-related assets for release
+    if ($configuration -eq "Release" -and $version -eq "5"){
+        # Generate Thunderstore.io manifest.json file and copy it to releases dir
+        # FORMAT:
+        # {
+        #     "name": "TestMod",
+        #     "version_number": "1.1.0",
+        #     "website_url": "https://github.com/thunderstore-io",
+        #     "description": "This is a description for a mod. 250 characters max",
+        #     "dependencies": [
+        #         "MythicManiac-TestMod-1.1.0"
+        #     ]
+        # }
+        $ManifestTemplate = Get-Content ".\manifest.json.template" -Raw
+        $ManifestVariables = @{
+            "ProjectVersion" = $ProjectVersion
+        }
+        $ManifestJson = Replace-Placeholders -template $ManifestTemplate -variables $ManifestVariables
+        $ManifestJson | Out-File "$outputDir\manifest.json"
+
+        # Copy icon.png file and readme.md
+        Copy-Item ".\icon.png" -Destination "$outputDir\icon.png"
+        Copy-Item ".\README.md" -Destination "$outputDir\README.md"
+
+        # Add icon.png and readme.md to files that must be included
+        $filesToInclude += ("icon.png", "README.md")
+
+        # Create a zip file
+        $zipFileName = $outputName + "-thunderstore.zip"
+        Compress-Archive -Path "$outputDir\*" -DestinationPath "$ReleasesPath\$zipFileName" -Force
+    }
+
     # Create a zip file
     $zipFileName = $outputName + ".zip"
     Compress-Archive -Path "$outputDir" -DestinationPath "$ReleasesPath\$zipFileName" -Force
+}
+
+# Function to replace placeholders in the template
+function Replace-Placeholders($template, $variables) {
+    foreach ($var in $variables.Keys) {
+        $template = $template.Replace("{$var}", $variables[$var])
+    }
+    return $template
 }
 
 # Iterate over versions and configurations
@@ -63,6 +103,3 @@ foreach ($version in $Versions) {
         BuildAndPackage $version $configuration
     }
 }
-
-# Delete the entire "output" folder
-#Remove-Item -Path $OutputPath -Recurse -Force
