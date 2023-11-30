@@ -271,8 +271,6 @@ namespace ExtendedRoadUpgrades.Systems
                     var currentEdgeEntity = updatedEdgesEntities[i];
                     var currentEdge = updatedEdges[i];
 
-                    Plugin.Logger.LogInfo($"Working with edge {currentEdgeEntity.ToJSONString()} - {currentEdge.ToJSONString()}");
-
                     if (m_CompositionData.TryGetComponent(currentEdgeEntity, out var currentEdgeComposition) &&
                         m_NetCompositionData.TryGetComponent(currentEdgeComposition.m_StartNode, out var currentEdgeStartNodeCompositionData) &&
                         m_NetCompositionData.TryGetComponent(currentEdgeComposition.m_EndNode, out var currentEdgeEndNodeCompositionData))

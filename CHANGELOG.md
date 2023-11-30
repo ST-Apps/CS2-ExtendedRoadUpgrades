@@ -4,7 +4,11 @@
 
 ## Known Issues
 
-- Retaining walls will generate empty spaces on connecting nodes
+> Please see the official [issue tracker](https://github.com/ST-Apps/CS2-ExtendedRoadUpgrades/issues).
+
+# 1.2.0
+
+- [FIX] Retaining walls are now more consistent by not having holes on every node
 
 # 1.1.1
 

@@ -52,7 +52,7 @@ Select one of them and upgrade your roads as you would with the other available 
 
 # Known Issues
 
-- Retaining walls will generate empty spaces on connecting nodes
+> Please see the official [issue tracker](https://github.com/ST-Apps/CS2-ExtendedRoadUpgrades/issues).
 
 # Thanks
 
