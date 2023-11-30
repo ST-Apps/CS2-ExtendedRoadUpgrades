@@ -8,7 +8,7 @@
 
 # 1.2.3
 
-- [FIX] Elevated roads being turned into retaining walls with 1.2.0
+- [FIX] Potential fix for some rare exception when selecting game tools
 
 # 1.2.2
 
