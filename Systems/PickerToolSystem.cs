@@ -12,6 +12,7 @@ using Unity.Collections;
 using UnityEngine.Scripting;
 using Unity.Jobs;
 using Colossal.Json;
+using static Colossal.IO.AssetDatabase.AtlasFrame;
 
 namespace ExtendedRoadUpgrades.Systems
 {
@@ -88,7 +89,7 @@ namespace ExtendedRoadUpgrades.Systems
                     netCompositionDataLookup.TryGetComponent(composition.m_StartNode, out var startNodeComposition) &&
                     netCompositionDataLookup.TryGetComponent(composition.m_EndNode, out var endNodeComposition))
                 {
-                    Plugin.Logger.LogInfo($"Found edge: {edge.ToJSONString()}");
+                    Plugin.Logger.LogInfo($"Found edge: {controlPoint.m_OriginalEntity.ToJSONString()} {edge.ToJSONString()}");
                     Plugin.Logger.LogInfo($"\tFound edge composition: {edgeComposition.ToJSONString()}");
                     Plugin.Logger.LogInfo($"\tFound start composition: {startNodeComposition.ToJSONString()}");
                     Plugin.Logger.LogInfo($"\tFound end composition: {endNodeComposition.ToJSONString()}");
