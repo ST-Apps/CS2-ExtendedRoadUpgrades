@@ -13,7 +13,7 @@
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<AssemblyName>ExtendedRoadUpgrades</AssemblyName>
 		<Description>A mod that enables multiple upgrade options for your roads.</Description>
-		<Version>1.2.0</Version>
+		<Version>1.2.1</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>latest</LangVersion>
 		<RestoreAdditionalProjectSources>
