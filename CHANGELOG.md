@@ -6,6 +6,10 @@
 
 > Please see the official [issue tracker](https://github.com/ST-Apps/CS2-ExtendedRoadUpgrades/issues).
 
+# 1.2.1
+
+- [FIX] Elevated roads being turned into retaining walls with 1.2.0
+
 # 1.2.0
 
 - [FIX] Retaining walls are now more consistent by not having holes on every node
