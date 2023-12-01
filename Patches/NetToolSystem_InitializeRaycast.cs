@@ -1,9 +1,9 @@
-﻿using Colossal.Json;
-using Game.Tools;
-using HarmonyLib;
-
-namespace ExtendedRoadUpgrades.Patches
+﻿namespace ExtendedRoadUpgrades.Patches
 {
+    using Game.Net;
+    using Game.Tools;
+    using HarmonyLib;
+
     /// <summary>
     ///     <para>
     ///         This patch just adds more flags to <see cref="NetToolSystem"/>'s <see cref="ToolRaycastSystem"/>.
@@ -30,7 +30,7 @@ namespace ExtendedRoadUpgrades.Patches
         {
             if (__instance.actualMode == NetToolSystem.Mode.Replace)
             {
-                ___m_ToolRaycastSystem.netLayerMask |= Game.Net.Layer.Pathway | Game.Net.Layer.TrainTrack | Game.Net.Layer.PublicTransportRoad;
+                ___m_ToolRaycastSystem.netLayerMask |= Game.Net.Layer.Pathway | Game.Net.Layer.TrainTrack | Layer.PublicTransportRoad | Game.Net.Layer.TramTrack;
             }
         }
 
