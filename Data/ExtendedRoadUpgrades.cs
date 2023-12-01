@@ -137,6 +137,46 @@
                     NetPieceRequirements.OppositeLowTransition,
                 },
             },
+
+            // Tunnel
+            new ExtendedRoadUpgradeModel
+            {
+                Id = "Tunnel",
+                Name = new Dictionary<string, string> {
+                    {
+                        "en-US",
+                        "Tunnel"
+                    },
+                },
+                Description = new Dictionary<string, string> {
+                    {
+                        "en-US",
+                        "Tunnel mode, it might not look perfect but it works."
+                    },
+                },
+                m_SetUpgradeFlags = new CompositionFlags
+                {
+                    m_General = CompositionFlags.General.Tunnel,
+                },
+                m_UnsetUpgradeFlags = new CompositionFlags
+                {
+                    m_Right = CompositionFlags.Side.WideSidewalk | CompositionFlags.Side.PrimaryBeautification | CompositionFlags.Side.Raised | CompositionFlags.Side.Lowered,
+                    m_Left = CompositionFlags.Side.WideSidewalk | CompositionFlags.Side.PrimaryBeautification | CompositionFlags.Side.Raised | CompositionFlags.Side.Lowered,
+                },
+
+                // TODO: not sure how this works yet
+                m_SetState = new[]
+                {
+                    NetPieceRequirements.Tunnel,
+                },
+                m_UnsetState = new[]
+                {
+                    NetPieceRequirements.Raised,
+                    NetPieceRequirements.Lowered,
+                    NetPieceRequirements.LowTransition,
+                    NetPieceRequirements.OppositeLowTransition,
+                },
+            },
         };
     }
 }

@@ -39,6 +39,7 @@
 	  <None Remove="Icons\Elevated.svg" />
 	  <None Remove="Icons\Quay.svg" />
 	  <None Remove="Icons\RetainingWall.svg" />
+	  <None Remove="Icons\Tunnel.svg" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Content Include="Icons\Quay.svg">
@@ -48,6 +49,9 @@
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
 	  <Content Include="Icons\Elevated.svg">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Icons\Tunnel.svg">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
 	</ItemGroup>
