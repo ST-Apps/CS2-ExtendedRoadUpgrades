@@ -402,6 +402,7 @@
                     return false;
                 }
 
+                // This fixes holes in retaining walls when two Lowered edges connect
                 if (startNodeComposition.m_Flags.m_Left.HasFlag(CompositionFlags.Side.Lowered) ||
                     endNodeComposition.m_Flags.m_Left.HasFlag(CompositionFlags.Side.Lowered))
                 {
@@ -416,6 +417,30 @@
                         m_Left = CompositionFlags.Side.LowTransition,
                         m_Right = CompositionFlags.Side.LowTransition,
                     });
+                }
+
+                // This fixes pillars when Raised edges connect to Elevated ones
+                if ((startNodeComposition.m_Flags.m_Left.HasFlag(CompositionFlags.Side.Raised) ||
+                        startNodeComposition.m_Flags.m_Left.HasFlag(CompositionFlags.Side.Raised)) &&
+                    endNodeComposition.m_Flags.m_General.HasFlag(CompositionFlags.General.Elevated))
+                {
+                    this.UpgradeFlags(
+                        ref startNodeComposition,
+                        new CompositionFlags
+                        {
+                            m_Left = CompositionFlags.Side.LowTransition,
+                            m_Right = CompositionFlags.Side.LowTransition,
+                        },
+                        default);
+
+                    this.UpgradeFlags(
+                        ref endNodeComposition,
+                        new CompositionFlags
+                        {
+                            m_Left = CompositionFlags.Side.LowTransition,
+                            m_Right = CompositionFlags.Side.LowTransition,
+                        },
+                        default);
                 }
 
                 return true;
