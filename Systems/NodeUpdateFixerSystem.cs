@@ -18,7 +18,11 @@
     using UnityEngine;
     using UnityEngine.Scripting;
 
-    internal class NodeRetainingWallUpdateSystem : GameSystemBase
+    /// <summary>
+    ///     This <see cref="GameSystemBase"/> iterates over <see cref="Upgraded"/> <see cref="Edge"/>s and applies some fixes to their <see cref="Node"/>'s <see cref="Composition"/>
+    ///     to replace some of the <see cref="CompositionFlags"/> that the game wrongfully applied during an upgrade.
+    /// </summary>
+    internal class NodeUpdateFixerSystem : GameSystemBase
     {
         #region Update Toggling
 
@@ -70,7 +74,7 @@
             this.canUpdate = this.currentTool is NetToolSystem &&
                 Data.ExtendedRoadUpgrades.Modes.Any(m => m.Id == this.currentNetPrefab?.name);
 
-            Plugin.Logger.LogDebug($"[{nameof(NodeRetainingWallUpdateSystem)}.{nameof(this.UpdateCanUpdate)}] Setting canUpdate to {this.canUpdate} because Tool is {this.currentTool} and Prefab is {this.currentNetPrefab?.name}.");
+            Plugin.Logger.LogDebug($"[{nameof(NodeUpdateFixerSystem)}.{nameof(this.UpdateCanUpdate)}] Setting canUpdate to {this.canUpdate} because Tool is {this.currentTool} and Prefab is {this.currentNetPrefab?.name}.");
         }
 
         private void OnPrefabChanged(PrefabBase prefabBase)
@@ -88,7 +92,7 @@
         #region GameSystemBase
 
         [Preserve]
-        public NodeRetainingWallUpdateSystem()
+        public NodeUpdateFixerSystem()
         {
         }
 
@@ -114,6 +118,7 @@
                     All = new ComponentType[] {
                         ComponentType.ReadOnly<Upgraded>(),
                         ComponentType.ReadOnly<Edge>(),
+
                         // Temp seems to be needed or we won't get edges being upgraded
                         ComponentType.ReadOnly<Temp>(),
                         ComponentType.ReadWrite<Composition>(),
@@ -159,18 +164,18 @@
             this.__TypeHandle.__Unity_Entities_Entity_TypeHandle.Update(ref this.CheckedStateRef);
             this.__TypeHandle.__Game_Composition_Data_RW_ComponentLookup.Update(ref this.CheckedStateRef);
             this.__TypeHandle.__Game_Net_Composition_Data_RW_ComponentLookup.Update(ref this.CheckedStateRef);
-            var nodeFixerJob = default(NodeFixerJob);
-            nodeFixerJob.m_EntityType = this.__TypeHandle.__Unity_Entities_Entity_TypeHandle;
-            nodeFixerJob.m_EdgeType = this.__TypeHandle.__Game_Net_Edge_RO_ComponentTypeHandle;
-            nodeFixerJob.m_EdgeData = this.__TypeHandle.__Game_Net_Edge_RO_ComponentLookup;
-            nodeFixerJob.m_CompositionData = this.__TypeHandle.__Game_Composition_Data_RW_ComponentLookup;
-            nodeFixerJob.m_NetCompositionData = this.__TypeHandle.__Game_Net_Composition_Data_RW_ComponentLookup;
-            nodeFixerJob.m_ConnectedEdges = this.__TypeHandle.__Game_Net_ConnectedEdge_RW_BufferLookup;
-            nodeFixerJob.m_CommandBuffer = this.m_ToolOutputBarrier.CreateCommandBuffer();
+            var nodeUpdateFixerJob = default(NodeUpdateFixerJob);
+            nodeUpdateFixerJob.m_EntityType = this.__TypeHandle.__Unity_Entities_Entity_TypeHandle;
+            nodeUpdateFixerJob.m_EdgeType = this.__TypeHandle.__Game_Net_Edge_RO_ComponentTypeHandle;
+            nodeUpdateFixerJob.m_EdgeData = this.__TypeHandle.__Game_Net_Edge_RO_ComponentLookup;
+            nodeUpdateFixerJob.m_CompositionData = this.__TypeHandle.__Game_Composition_Data_RW_ComponentLookup;
+            nodeUpdateFixerJob.m_NetCompositionData = this.__TypeHandle.__Game_Net_Composition_Data_RW_ComponentLookup;
+            nodeUpdateFixerJob.m_ConnectedEdges = this.__TypeHandle.__Game_Net_ConnectedEdge_RW_BufferLookup;
+            nodeUpdateFixerJob.m_CommandBuffer = this.m_ToolOutputBarrier.CreateCommandBuffer();
 #if DEBUG
-            nodeFixerJob.m_NodeData = this.__TypeHandle.__Game_Net_Node_RO_ComponentLookup;
-            nodeFixerJob.m_GizmoBatcher = this.m_GizmosSystem.GetGizmosBatcher(out JobHandle jobHandle);
-            var jobHandle2 = nodeFixerJob.Schedule(this.m_UpdatedQuery, JobHandle.CombineDependencies(this.Dependency, jobHandle));
+            nodeUpdateFixerJob.m_NodeData = this.__TypeHandle.__Game_Net_Node_RO_ComponentLookup;
+            nodeUpdateFixerJob.m_GizmoBatcher = this.m_GizmosSystem.GetGizmosBatcher(out JobHandle jobHandle);
+            var jobHandle2 = nodeUpdateFixerJob.Schedule(this.m_UpdatedQuery, JobHandle.CombineDependencies(this.Dependency, jobHandle));
             this.m_ToolOutputBarrier.AddJobHandleForProducer(jobHandle2);
             this.Dependency = jobHandle2;
 #else
@@ -230,7 +235,7 @@
             }
         }
 
-        private struct NodeFixerJob : IJobChunk
+        private struct NodeUpdateFixerJob : IJobChunk
         {
             [ReadOnly]
             public EntityTypeHandle m_EntityType;
@@ -337,11 +342,7 @@
             {
                 // If we're on a DeadEnd node we need to check both of its sides.
                 // If both have a Lowered flag then we need to remove the LowTransition flag on both sides.
-                if (currentNodeCompositionData.m_Flags.m_General.HasFlag(CompositionFlags.General.DeadEnd) &&
-
-                    // TODO: move this to the UpgradeFlags method to leave this method as generic as possible
-                    currentNodeCompositionData.m_Flags.m_Left.HasFlag(CompositionFlags.Side.Lowered) &&
-                    currentNodeCompositionData.m_Flags.m_Right.HasFlag(CompositionFlags.Side.Lowered))
+                if (currentNodeCompositionData.m_Flags.m_General.HasFlag(CompositionFlags.General.DeadEnd))
                 {
                     this.UpgradeFlags(ref currentNodeCompositionData, ref currentNodeCompositionData);
                     this.m_CommandBuffer.SetComponent(currentEdgeNode, currentNodeCompositionData);
@@ -351,6 +352,7 @@
                 {
                     if (this.m_CompositionData.TryGetComponent(connectedEdge, out var connectedEdgeComposition) &&
                         this.m_NetCompositionData.TryGetComponent(isStartNode ? connectedEdgeComposition.m_EndNode : connectedEdgeComposition.m_StartNode, out var connectedEdgeCompositionData) &&
+
                         // True if flags are updated, otherwise we don't need to do anything else
                         this.UpgradeFlags(
                             ref currentNodeCompositionData,
@@ -402,7 +404,19 @@
                     return false;
                 }
 
-                // This fixes holes in retaining walls when two Lowered edges connect
+                // This fix holes in Retaining Walls for DeadEnd nodes
+                if (isDeadEndNode &&
+                    startNodeComposition.m_Flags.m_Left.HasFlag(CompositionFlags.Side.Lowered) &&
+                    startNodeComposition.m_Flags.m_Right.HasFlag(CompositionFlags.Side.Lowered))
+                {
+                    this.UpgradeFlags(ref startNodeComposition, default, new CompositionFlags
+                    {
+                        m_Left = CompositionFlags.Side.LowTransition,
+                        m_Right = CompositionFlags.Side.LowTransition,
+                    });
+                }
+
+                // This fixes holes in Retaining Walls when two Lowered edges connect
                 if (startNodeComposition.m_Flags.m_Left.HasFlag(CompositionFlags.Side.Lowered) ||
                     endNodeComposition.m_Flags.m_Left.HasFlag(CompositionFlags.Side.Lowered))
                 {

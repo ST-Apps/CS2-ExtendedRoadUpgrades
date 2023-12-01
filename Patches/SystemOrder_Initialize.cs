@@ -20,8 +20,8 @@
             updateSystem.UpdateAt<PickerToolSystem>(SystemUpdatePhase.ToolUpdate);
 #endif
             Plugin.Logger.LogInfo($"[{nameof(SystemOrder_Initialize)}.{nameof(Postfix)}] Creating retaining walls fixer system...");
-            updateSystem.World.GetOrCreateSystem<NodeRetainingWallUpdateSystem>();
-            updateSystem.UpdateAt<NodeRetainingWallUpdateSystem>(SystemUpdatePhase.ToolUpdate);
+            updateSystem.World.GetOrCreateSystem<NodeUpdateFixerSystem>();
+            updateSystem.UpdateAt<NodeUpdateFixerSystem>(SystemUpdatePhase.ToolUpdate);
 
             Plugin.Logger.LogInfo($"...done.");
         }
