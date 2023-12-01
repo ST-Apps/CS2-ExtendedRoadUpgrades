@@ -1,19 +1,19 @@
-﻿using Colossal.IO.AssetDatabase;
-using HarmonyLib;
-using System;
-using System.Collections.Generic;
-
-namespace ExtendedRoadUpgrades.Patches
+﻿namespace ExtendedRoadUpgrades.Patches
 {
+    using System;
+    using System.Collections.Generic;
+    using Colossal.IO.AssetDatabase;
+    using HarmonyLib;
+
     [HarmonyPatch(typeof(LocaleData))]
     [HarmonyPatch(MethodType.Constructor)]
     [HarmonyPatch(new Type[] { typeof(string), typeof(Dictionary<string, string>), typeof(Dictionary<string, int>) })]
-    class LocaleData_ctor
+    internal class LocaleData_ctor
     {
         /// <summary>
         /// We simply add our custom entries to <see cref="LocaleData.entries"/> by hooking
         /// into its constructor.
-        /// 
+        ///
         /// <b>I don't know the implications on not updating <see cref="LocaleData.indexCounts"/> but it works for now.</b>
         /// </summary>
         /// <param name="__instance"></param>

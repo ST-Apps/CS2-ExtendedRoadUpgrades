@@ -1,23 +1,23 @@
-﻿using Colossal;
-using Colossal.Json;
-using Game;
-using Game.Common;
-using Game.Net;
-using Game.Prefabs;
-using Game.Tools;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using Unity.Burst.Intrinsics;
-using Unity.Collections;
-using Unity.Entities;
-using Unity.Jobs;
-using UnityEngine;
-using UnityEngine.Scripting;
-
-namespace ExtendedRoadUpgrades.Systems
+﻿namespace ExtendedRoadUpgrades.Systems
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Runtime.CompilerServices;
+    using Colossal;
+    using Colossal.Json;
+    using Game;
+    using Game.Common;
+    using Game.Net;
+    using Game.Prefabs;
+    using Game.Tools;
+    using Unity.Burst.Intrinsics;
+    using Unity.Collections;
+    using Unity.Entities;
+    using Unity.Jobs;
+    using UnityEngine;
+    using UnityEngine.Scripting;
+
     internal class NodeRetainingWallUpdateSystem : GameSystemBase
     {
         #region Update Toggling
@@ -28,58 +28,59 @@ namespace ExtendedRoadUpgrades.Systems
         ///     upgrade modes.
         ///     Logic is defined in the <see cref="UpdateCanUpdate"/> method.
         /// </summary>
-        private bool _canUpdate;
+        private bool canUpdate;
 
-        private PrefabBase _currentNetPrefab;
+        private PrefabBase currentNetPrefab;
+
+        private ToolBaseSystem currentTool;
 
         /// <summary>
-        ///     Current <see cref="PrefabBase"/> selected in <see cref="NetToolSystem"/>, needed to
+        ///     Sets the current <see cref="PrefabBase"/> selected in <see cref="NetToolSystem"/>, needed to
         ///     detect if we're using one of our custom upgrade modes.
         /// </summary>
         private PrefabBase CurrentNetPrefab
         {
             set
             {
-                _currentNetPrefab = value;
-                UpdateCanUpdate();
+                this.currentNetPrefab = value;
+                this.UpdateCanUpdate();
             }
         }
 
         /// <summary>
-        ///     Current <see cref="ToolBaseSystem"/> selected in-game, needed to detect if we're in
+        ///     Sets the current <see cref="ToolBaseSystem"/> selected in-game, needed to detect if we're in
         ///     <see cref="NetToolSystem"/>.
         /// </summary>
-        private ToolBaseSystem _currentTool;
         private ToolBaseSystem CurrentNetTool
         {
             set
             {
-                _currentTool = value;
-                UpdateCanUpdate();
+                this.currentTool = value;
+                this.UpdateCanUpdate();
             }
         }
 
         /// <summary>
-        ///     Toggles <see cref="_canUpdate"/> on/off based on the value of <see cref="CurrentNetTool"/> and <see cref="CurrentNetPrefab"/>.
+        ///     Toggles <see cref="canUpdate"/> on/off based on the value of <see cref="CurrentNetTool"/> and <see cref="CurrentNetPrefab"/>.
         ///     We allow running updates when <see cref="CurrentNetTool"/> is <see cref="NetToolSystem"/> and when <see cref="CurrentNetPrefab"/> is
         ///     one of our custom upgrade modes.
         /// </summary>
         private void UpdateCanUpdate()
         {
-            _canUpdate = _currentTool is NetToolSystem &&
-                Data.ExtendedRoadUpgrades.Modes.Any(m => m.Id == _currentNetPrefab?.name);
+            this.canUpdate = this.currentTool is NetToolSystem &&
+                Data.ExtendedRoadUpgrades.Modes.Any(m => m.Id == this.currentNetPrefab?.name);
 
-            Plugin.Logger.LogDebug($"[{nameof(NodeRetainingWallUpdateSystem)}.{nameof(UpdateCanUpdate)}] Setting canUpdate to {_canUpdate} because Tool is {_currentTool} and Prefab is {_currentNetPrefab?.name}.");
+            Plugin.Logger.LogDebug($"[{nameof(NodeRetainingWallUpdateSystem)}.{nameof(this.UpdateCanUpdate)}] Setting canUpdate to {this.canUpdate} because Tool is {this.currentTool} and Prefab is {this.currentNetPrefab?.name}.");
         }
 
         private void OnPrefabChanged(PrefabBase prefabBase)
         {
-            CurrentNetPrefab = prefabBase;
+            this.CurrentNetPrefab = prefabBase;
         }
 
         private void OnToolChanged(ToolBaseSystem tool)
         {
-            CurrentNetTool = tool;
+            this.CurrentNetTool = tool;
         }
 
         #endregion
@@ -91,16 +92,11 @@ namespace ExtendedRoadUpgrades.Systems
         {
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void __AssignQueries(ref SystemState state)
-        {
-        }
-
         protected override void OnCreateForCompiler()
         {
             base.OnCreateForCompiler();
-            __AssignQueries(ref CheckedStateRef);
-            __TypeHandle.__AssignHandles(ref CheckedStateRef);
+            this.__AssignQueries(ref this.CheckedStateRef);
+            this.__TypeHandle.__AssignHandles(ref this.CheckedStateRef);
         }
 
         [Preserve]
@@ -108,10 +104,10 @@ namespace ExtendedRoadUpgrades.Systems
         {
             base.OnCreate();
 #if DEBUG
-            this.m_GizmosSystem = base.World.GetOrCreateSystemManaged<GizmosSystem>();
+            this.m_GizmosSystem = this.World.GetOrCreateSystemManaged<GizmosSystem>();
 #endif
-            m_ToolOutputBarrier = World.GetOrCreateSystemManaged<ToolOutputBarrier>();
-            m_UpdatedQuery = GetEntityQuery(new EntityQueryDesc[]
+            this.m_ToolOutputBarrier = this.World.GetOrCreateSystemManaged<ToolOutputBarrier>();
+            this.m_UpdatedQuery = this.GetEntityQuery(new EntityQueryDesc[]
             {
                 new EntityQueryDesc
                 {
@@ -120,65 +116,73 @@ namespace ExtendedRoadUpgrades.Systems
                         ComponentType.ReadOnly<Edge>(),
                         // Temp seems to be needed or we won't get edges being upgraded
                         ComponentType.ReadOnly<Temp>(),
-                        ComponentType.ReadWrite<Composition>()
+                        ComponentType.ReadWrite<Composition>(),
                     },
                     None = new ComponentType[]
                     {
                         ComponentType.ReadOnly<Deleted>(),
-                        ComponentType.ReadOnly<Hidden>()
-                    }
-                }
+                        ComponentType.ReadOnly<Hidden>(),
+                    },
+                },
             });
-            m_UpdatedQuery.AddOrderVersionFilter();
-            m_UpdatedQuery.AddChangedVersionFilter(ComponentType.ReadOnly<Edge>());
-            m_UpdatedQuery.AddChangedVersionFilter(ComponentType.ReadOnly<Temp>());
-            RequireForUpdate(m_UpdatedQuery);
+            this.m_UpdatedQuery.AddOrderVersionFilter();
+            this.m_UpdatedQuery.AddChangedVersionFilter(ComponentType.ReadOnly<Edge>());
+            this.m_UpdatedQuery.AddChangedVersionFilter(ComponentType.ReadOnly<Temp>());
+            this.RequireForUpdate(this.m_UpdatedQuery);
 
             // Register on ToolSystem.EventToolChanged and EventPrefabChanged to execute our Update method only while using the NetTool and our custom modes
-            m_ToolSystem = World.GetOrCreateSystemManaged<ToolSystem>();
-            m_ToolSystem.EventToolChanged = (Action<ToolBaseSystem>)Delegate.Combine(m_ToolSystem.EventToolChanged, new Action<ToolBaseSystem>(OnToolChanged));
-            m_ToolSystem.EventPrefabChanged = (Action<PrefabBase>)Delegate.Combine(m_ToolSystem.EventPrefabChanged, new Action<PrefabBase>(OnPrefabChanged));
+            this.m_ToolSystem = this.World.GetOrCreateSystemManaged<ToolSystem>();
+            this.m_ToolSystem.EventToolChanged = (Action<ToolBaseSystem>)Delegate.Combine(this.m_ToolSystem.EventToolChanged, new Action<ToolBaseSystem>(this.OnToolChanged));
+            this.m_ToolSystem.EventPrefabChanged = (Action<PrefabBase>)Delegate.Combine(this.m_ToolSystem.EventPrefabChanged, new Action<PrefabBase>(this.OnPrefabChanged));
         }
 
         [Preserve]
         protected override void OnDestroy()
         {
             // Deregister from ToolSystem.EventToolChanged and EventPrefabChanged
-            m_ToolSystem.EventToolChanged = (Action<ToolBaseSystem>)Delegate.Remove(m_ToolSystem.EventToolChanged, new Action<ToolBaseSystem>(OnToolChanged));
-            m_ToolSystem.EventPrefabChanged = (Action<PrefabBase>)Delegate.Remove(m_ToolSystem.EventPrefabChanged, new Action<PrefabBase>(OnPrefabChanged));
+            this.m_ToolSystem.EventToolChanged = (Action<ToolBaseSystem>)Delegate.Remove(this.m_ToolSystem.EventToolChanged, new Action<ToolBaseSystem>(this.OnToolChanged));
+            this.m_ToolSystem.EventPrefabChanged = (Action<PrefabBase>)Delegate.Remove(this.m_ToolSystem.EventPrefabChanged, new Action<PrefabBase>(this.OnPrefabChanged));
             base.OnDestroy();
         }
 
         [Preserve]
         protected override void OnUpdate()
         {
-            if (!_canUpdate || m_UpdatedQuery.IsEmpty) return;
+            if (!this.canUpdate || this.m_UpdatedQuery.IsEmpty)
+            {
+                return;
+            }
 
-            __TypeHandle.__Game_Net_ConnectedEdge_RW_BufferLookup.Update(ref CheckedStateRef);
-            __TypeHandle.__Game_Net_Edge_RO_ComponentTypeHandle.Update(ref CheckedStateRef);
-            __TypeHandle.__Game_Net_Edge_RO_ComponentLookup.Update(ref CheckedStateRef);
-            __TypeHandle.__Unity_Entities_Entity_TypeHandle.Update(ref CheckedStateRef);
-            __TypeHandle.__Game_Composition_Data_RW_ComponentLookup.Update(ref CheckedStateRef);
-            __TypeHandle.__Game_Net_Composition_Data_RW_ComponentLookup.Update(ref CheckedStateRef);
+            this.__TypeHandle.__Game_Net_ConnectedEdge_RW_BufferLookup.Update(ref this.CheckedStateRef);
+            this.__TypeHandle.__Game_Net_Edge_RO_ComponentTypeHandle.Update(ref this.CheckedStateRef);
+            this.__TypeHandle.__Game_Net_Edge_RO_ComponentLookup.Update(ref this.CheckedStateRef);
+            this.__TypeHandle.__Unity_Entities_Entity_TypeHandle.Update(ref this.CheckedStateRef);
+            this.__TypeHandle.__Game_Composition_Data_RW_ComponentLookup.Update(ref this.CheckedStateRef);
+            this.__TypeHandle.__Game_Net_Composition_Data_RW_ComponentLookup.Update(ref this.CheckedStateRef);
             var nodeFixerJob = default(NodeFixerJob);
-            nodeFixerJob.m_EntityType = __TypeHandle.__Unity_Entities_Entity_TypeHandle;
-            nodeFixerJob.m_EdgeType = __TypeHandle.__Game_Net_Edge_RO_ComponentTypeHandle;
-            nodeFixerJob.m_EdgeData = __TypeHandle.__Game_Net_Edge_RO_ComponentLookup;
-            nodeFixerJob.m_CompositionData = __TypeHandle.__Game_Composition_Data_RW_ComponentLookup;
-            nodeFixerJob.m_NetCompositionData = __TypeHandle.__Game_Net_Composition_Data_RW_ComponentLookup;
-            nodeFixerJob.m_ConnectedEdges = __TypeHandle.__Game_Net_ConnectedEdge_RW_BufferLookup;
-            nodeFixerJob.m_CommandBuffer = m_ToolOutputBarrier.CreateCommandBuffer();
+            nodeFixerJob.m_EntityType = this.__TypeHandle.__Unity_Entities_Entity_TypeHandle;
+            nodeFixerJob.m_EdgeType = this.__TypeHandle.__Game_Net_Edge_RO_ComponentTypeHandle;
+            nodeFixerJob.m_EdgeData = this.__TypeHandle.__Game_Net_Edge_RO_ComponentLookup;
+            nodeFixerJob.m_CompositionData = this.__TypeHandle.__Game_Composition_Data_RW_ComponentLookup;
+            nodeFixerJob.m_NetCompositionData = this.__TypeHandle.__Game_Net_Composition_Data_RW_ComponentLookup;
+            nodeFixerJob.m_ConnectedEdges = this.__TypeHandle.__Game_Net_ConnectedEdge_RW_BufferLookup;
+            nodeFixerJob.m_CommandBuffer = this.m_ToolOutputBarrier.CreateCommandBuffer();
 #if DEBUG
-            nodeFixerJob.m_NodeData = __TypeHandle.__Game_Net_Node_RO_ComponentLookup;
-            nodeFixerJob.m_GizmoBatcher = m_GizmosSystem.GetGizmosBatcher(out JobHandle jobHandle);
-            var jobHandle2 = nodeFixerJob.Schedule(m_UpdatedQuery, JobHandle.CombineDependencies(Dependency, jobHandle));
-            m_ToolOutputBarrier.AddJobHandleForProducer(jobHandle2);
-            Dependency = jobHandle2;
+            nodeFixerJob.m_NodeData = this.__TypeHandle.__Game_Net_Node_RO_ComponentLookup;
+            nodeFixerJob.m_GizmoBatcher = this.m_GizmosSystem.GetGizmosBatcher(out JobHandle jobHandle);
+            var jobHandle2 = nodeFixerJob.Schedule(this.m_UpdatedQuery, JobHandle.CombineDependencies(this.Dependency, jobHandle));
+            this.m_ToolOutputBarrier.AddJobHandleForProducer(jobHandle2);
+            this.Dependency = jobHandle2;
 #else
             var jobHandle = nodeFixerJob.Schedule(m_UpdatedQuery, Dependency);
             m_ToolOutputBarrier.AddJobHandleForProducer(jobHandle);
             Dependency = jobHandle;
 #endif
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void __AssignQueries(ref SystemState state)
+        {
         }
 
         #endregion
@@ -195,18 +199,6 @@ namespace ExtendedRoadUpgrades.Systems
 
         private struct TypeHandle
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public void __AssignHandles(ref SystemState state)
-            {
-                __Unity_Entities_Entity_TypeHandle = state.GetEntityTypeHandle();
-                __Game_Net_Edge_RO_ComponentTypeHandle = state.GetComponentTypeHandle<Edge>(true);
-                __Game_Net_Edge_RO_ComponentLookup = state.GetComponentLookup<Edge>(true);
-                __Game_Net_Node_RO_ComponentLookup = state.GetComponentLookup<Node>(true);
-                __Game_Net_ConnectedEdge_RW_BufferLookup = state.GetBufferLookup<ConnectedEdge>(true);
-                __Game_Composition_Data_RW_ComponentLookup = state.GetComponentLookup<Composition>(false);
-                __Game_Net_Composition_Data_RW_ComponentLookup = state.GetComponentLookup<NetCompositionData>(false);
-            }
-
             [ReadOnly]
             public EntityTypeHandle __Unity_Entities_Entity_TypeHandle;
 
@@ -224,6 +216,18 @@ namespace ExtendedRoadUpgrades.Systems
             public ComponentLookup<Composition> __Game_Composition_Data_RW_ComponentLookup;
 
             public BufferLookup<ConnectedEdge> __Game_Net_ConnectedEdge_RW_BufferLookup;
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public void __AssignHandles(ref SystemState state)
+            {
+                this.__Unity_Entities_Entity_TypeHandle = state.GetEntityTypeHandle();
+                this.__Game_Net_Edge_RO_ComponentTypeHandle = state.GetComponentTypeHandle<Edge>(true);
+                this.__Game_Net_Edge_RO_ComponentLookup = state.GetComponentLookup<Edge>(true);
+                this.__Game_Net_Node_RO_ComponentLookup = state.GetComponentLookup<Node>(true);
+                this.__Game_Net_ConnectedEdge_RW_BufferLookup = state.GetBufferLookup<ConnectedEdge>(true);
+                this.__Game_Composition_Data_RW_ComponentLookup = state.GetComponentLookup<Composition>(false);
+                this.__Game_Net_Composition_Data_RW_ComponentLookup = state.GetComponentLookup<NetCompositionData>(false);
+            }
         }
 
         private struct NodeFixerJob : IJobChunk
@@ -263,20 +267,20 @@ namespace ExtendedRoadUpgrades.Systems
             /// <param name="chunkEnabledMask"></param>
             public void Execute(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask)
             {
-                var updatedEdges = chunk.GetNativeArray(ref m_EdgeType);
-                var updatedEdgesEntities = chunk.GetNativeArray(m_EntityType);
+                var updatedEdges = chunk.GetNativeArray(ref this.m_EdgeType);
+                var updatedEdgesEntities = chunk.GetNativeArray(this.m_EntityType);
 
                 for (var i = 0; i < updatedEdges.Length; i++)
                 {
                     var currentEdgeEntity = updatedEdgesEntities[i];
                     var currentEdge = updatedEdges[i];
 
-                    if (m_CompositionData.TryGetComponent(currentEdgeEntity, out var currentEdgeComposition) &&
-                        m_NetCompositionData.TryGetComponent(currentEdgeComposition.m_StartNode, out var currentEdgeStartNodeCompositionData) &&
-                        m_NetCompositionData.TryGetComponent(currentEdgeComposition.m_EndNode, out var currentEdgeEndNodeCompositionData))
+                    if (this.m_CompositionData.TryGetComponent(currentEdgeEntity, out var currentEdgeComposition) &&
+                        this.m_NetCompositionData.TryGetComponent(currentEdgeComposition.m_StartNode, out var currentEdgeStartNodeCompositionData) &&
+                        this.m_NetCompositionData.TryGetComponent(currentEdgeComposition.m_EndNode, out var currentEdgeEndNodeCompositionData))
                     {
-                        ProcessConnectedEdges(currentEdge.m_Start, currentEdgeStartNodeCompositionData, currentEdgeComposition.m_StartNode, true);
-                        ProcessConnectedEdges(currentEdge.m_End, currentEdgeEndNodeCompositionData, currentEdgeComposition.m_EndNode, false);
+                        this.ProcessConnectedEdges(currentEdge.m_Start, currentEdgeStartNodeCompositionData, currentEdgeComposition.m_StartNode, true);
+                        this.ProcessConnectedEdges(currentEdge.m_End, currentEdgeEndNodeCompositionData, currentEdgeComposition.m_EndNode, false);
                     }
                 }
             }
@@ -288,7 +292,7 @@ namespace ExtendedRoadUpgrades.Systems
             /// <param name="nodeEntity"></param>
             private IEnumerable<Entity> ConnectedEdges(Entity nodeEntity)
             {
-                if (!m_ConnectedEdges.TryGetBuffer(nodeEntity, out var connectedEdgesBuffer) &&
+                if (!this.m_ConnectedEdges.TryGetBuffer(nodeEntity, out var connectedEdgesBuffer) &&
                     !connectedEdgesBuffer.IsCreated)
                 {
                     yield break;
@@ -339,24 +343,25 @@ namespace ExtendedRoadUpgrades.Systems
                     currentNodeCompositionData.m_Flags.m_Left.HasFlag(CompositionFlags.Side.Lowered) &&
                     currentNodeCompositionData.m_Flags.m_Right.HasFlag(CompositionFlags.Side.Lowered))
                 {
-                    UpgradeFlags(ref currentNodeCompositionData, ref currentNodeCompositionData);
-                    m_CommandBuffer.SetComponent(currentEdgeNode, currentNodeCompositionData);
+                    this.UpgradeFlags(ref currentNodeCompositionData, ref currentNodeCompositionData);
+                    this.m_CommandBuffer.SetComponent(currentEdgeNode, currentNodeCompositionData);
                 }
 
-                foreach (var connectedEdge in ConnectedEdges(currentNodeEntity))
+                foreach (var connectedEdge in this.ConnectedEdges(currentNodeEntity))
                 {
-                    if (m_CompositionData.TryGetComponent(connectedEdge, out var connectedEdgeComposition) &&
-                        m_NetCompositionData.TryGetComponent(isStartNode ? connectedEdgeComposition.m_EndNode : connectedEdgeComposition.m_StartNode, out var connectedEdgeCompositionData) &&
+                    if (this.m_CompositionData.TryGetComponent(connectedEdge, out var connectedEdgeComposition) &&
+                        this.m_NetCompositionData.TryGetComponent(isStartNode ? connectedEdgeComposition.m_EndNode : connectedEdgeComposition.m_StartNode, out var connectedEdgeCompositionData) &&
                         // True if flags are updated, otherwise we don't need to do anything else
-                        UpgradeFlags(ref currentNodeCompositionData,
+                        this.UpgradeFlags(
+                            ref currentNodeCompositionData,
                             ref connectedEdgeCompositionData,
-                            FlagsMatch(isStartNode ? currentNodeCompositionData : connectedEdgeCompositionData, isStartNode ? connectedEdgeCompositionData : currentNodeCompositionData, isStartNode)))
+                            this.FlagsMatch(isStartNode ? currentNodeCompositionData : connectedEdgeCompositionData, isStartNode ? connectedEdgeCompositionData : currentNodeCompositionData, isStartNode)))
                     {
                         // Setting components
-                        m_CommandBuffer.SetComponent(currentEdgeNode, currentNodeCompositionData);
-                        m_CommandBuffer.SetComponent(isStartNode ? connectedEdgeComposition.m_EndNode : connectedEdgeComposition.m_StartNode, connectedEdgeCompositionData);
+                        this.m_CommandBuffer.SetComponent(currentEdgeNode, currentNodeCompositionData);
+                        this.m_CommandBuffer.SetComponent(isStartNode ? connectedEdgeComposition.m_EndNode : connectedEdgeComposition.m_StartNode, connectedEdgeCompositionData);
 #if DEBUG
-                        DebugDrawGizmos(connectedEdge, isStartNode ? Color.green : Color.blue);
+                        this.DebugDrawGizmos(connectedEdge, isStartNode ? Color.green : Color.blue);
 #endif
                     }
                 }
@@ -392,19 +397,21 @@ namespace ExtendedRoadUpgrades.Systems
             private bool UpgradeFlags(ref NetCompositionData startNodeComposition, ref NetCompositionData endNodeComposition, bool isDeadEndNode = false, bool areFlagsMatching = false)
             {
                 if (!isDeadEndNode && !areFlagsMatching)
+                {
                     // TODO: implement proper logic based on different cases rather than removing LowTransition regardless of the scenario
                     return false;
+                }
 
                 if (startNodeComposition.m_Flags.m_Left.HasFlag(CompositionFlags.Side.Lowered) ||
                     endNodeComposition.m_Flags.m_Left.HasFlag(CompositionFlags.Side.Lowered))
                 {
-                    UpgradeFlags(ref startNodeComposition, default, new CompositionFlags
+                    this.UpgradeFlags(ref startNodeComposition, default, new CompositionFlags
                     {
                         m_Left = CompositionFlags.Side.LowTransition,
                         m_Right = CompositionFlags.Side.LowTransition,
                     });
 
-                    UpgradeFlags(ref endNodeComposition, default, new CompositionFlags
+                    this.UpgradeFlags(ref endNodeComposition, default, new CompositionFlags
                     {
                         m_Left = CompositionFlags.Side.LowTransition,
                         m_Right = CompositionFlags.Side.LowTransition,
@@ -417,19 +424,19 @@ namespace ExtendedRoadUpgrades.Systems
 #if DEBUG
             private void DebugDrawGizmos(Entity connectedEdge, Color color)
             {
-                if (m_EdgeData.TryGetComponent(connectedEdge, out var connectedEdgeData) &&
-                    m_NodeData.TryGetComponent(connectedEdgeData.m_Start, out var startNode) &&
-                    m_NodeData.TryGetComponent(connectedEdgeData.m_End, out var endNode))
+                if (this.m_EdgeData.TryGetComponent(connectedEdge, out var connectedEdgeData) &&
+                    this.m_NodeData.TryGetComponent(connectedEdgeData.m_Start, out var startNode) &&
+                    this.m_NodeData.TryGetComponent(connectedEdgeData.m_End, out var endNode))
                 {
-                    m_GizmoBatcher.DrawWireCone(startNode.m_Position, 3f, endNode.m_Position, 3f, color);
-                    m_GizmoBatcher.DrawLine(startNode.m_Position, endNode.m_Position, Color.red);
+                    this.m_GizmoBatcher.DrawWireCone(startNode.m_Position, 3f, endNode.m_Position, 3f, color);
+                    this.m_GizmoBatcher.DrawLine(startNode.m_Position, endNode.m_Position, Color.red);
                 }
             }
 #endif
 
             void IJobChunk.Execute(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask)
             {
-                Execute(chunk, unfilteredChunkIndex, useEnabledMask, chunkEnabledMask);
+                this.Execute(chunk, unfilteredChunkIndex, useEnabledMask, chunkEnabledMask);
             }
         }
 

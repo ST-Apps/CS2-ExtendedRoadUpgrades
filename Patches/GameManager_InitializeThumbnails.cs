@@ -1,17 +1,17 @@
-﻿using Colossal.Json;
-using Game.Prefabs;
-using Game.SceneFlow;
-using Game.UI;
-using HarmonyLib;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using Unity.Entities;
-using UnityEngine;
-
-namespace ExtendedRoadUpgrades.Patches
+﻿namespace ExtendedRoadUpgrades.Patches
 {
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Reflection;
+    using Colossal.Json;
+    using Game.Prefabs;
+    using Game.SceneFlow;
+    using Game.UI;
+    using HarmonyLib;
+    using Unity.Entities;
+    using UnityEngine;
+
     /// <summary>
     ///     <para>
     ///         InitializeThumbnails is one of the few synchronous methods that are executed during <see cref="GameManager"/> initialization
@@ -27,54 +27,54 @@ namespace ExtendedRoadUpgrades.Patches
     ///         <see cref="PrefabBase"/>. For this reason, the event will be used to perform the actual patch for our upgrade modes, by setting
     ///         the appropriate <see cref="PlaceableNetData.m_SetUpgradeFlags"/> and <see cref="PlaceableNetData.m_UnsetUpgradeFlags"/> flags.
     ///     </para>
-    ///     
+    ///
     /// TODO: the event could probably work for <see cref="Game.GameMode.GameOrEditor"/> as well but we'll check it when the editor will be released.
     /// </summary>
     [HarmonyPatch(typeof(GameManager), "InitializeThumbnails")]
     internal class GameManager_InitializeThumbnails
     {
         /// <summary>
-        ///     Guard boolean used to check if the Prefix already executed, so that we can prevent executing it multiple times.
-        /// </summary>
-        static bool PrefixExecuted;
-
-        /// <summary>
-        ///     Guard boolean used to check if the Event Handler already executed, so that we can prevent executing it multiple times.
-        /// </summary>
-        static bool EventExecuted;
-
-        /// <summary>
-        ///     <see cref="World"/> instance used by our patch and by the loading event handler.
-        /// </summary>
-        static World World;
-
-        /// <summary>
-        ///     <see cref="PrefabSystem"/> instance used by our patch and by the loading event handler. 
-        /// </summary>
-        static PrefabSystem PrefabSystem;
-
-        /// <summary>
         ///     Key used by COUI to load icons from our mod's directory.
         /// </summary>
-        static readonly string IconsResourceKey = $"{MyPluginInfo.PLUGIN_NAME.ToLower()}ui";
+        private static readonly string IconsResourceKey = $"{MyPluginInfo.PLUGIN_NAME.ToLower()}ui";
 
         /// <summary>
         ///     Base URI for all of our icons.
         /// </summary>
-        static readonly string COUIBaseLocation = $"coui://{IconsResourceKey}";
+        private static readonly string COUIBaseLocation = $"coui://{IconsResourceKey}";
+
+        /// <summary>
+        ///     Guard boolean used to check if the Prefix already executed, so that we can prevent executing it multiple times.
+        /// </summary>
+        private static bool prefixExecuted;
+
+        /// <summary>
+        ///     Guard boolean used to check if the Event Handler already executed, so that we can prevent executing it multiple times.
+        /// </summary>
+        private static bool eventExecuted;
+
+        /// <summary>
+        ///     <see cref="world"/> instance used by our patch and by the loading event handler.
+        /// </summary>
+        private static World world;
+
+        /// <summary>
+        ///     <see cref="prefabSystem"/> instance used by our patch and by the loading event handler. 
+        /// </summary>
+        private static PrefabSystem prefabSystem;
 
         /// <summary>
         ///     <para>
         ///         Prefix's responsibility is to just add our cloned <see cref="PrefabBase"/> to the global collection in
-        ///         <see cref="PrefabSystem"/>.
+        ///         <see cref="prefabSystem"/>.
         ///     </para>
         ///     <para>
-        ///         To avoid getting the wrong <see cref="World"/> instance we rely on Harmony's <see cref="Traverse"/> to extract the
+        ///         To avoid getting the wrong <see cref="world"/> instance we rely on Harmony's <see cref="Traverse"/> to extract the
         ///         <b>m_World</b> field from the injected <see cref="GameManager"/> instance.
         ///     </para>
         ///     <para>
-        ///         After that, we leverage <see cref="World.GetOrCreateSystemManaged{T}"/> to get our target <see cref="PrefabSystem"/>.
-        ///         From there, to get <see cref="PrefabSystem"/>'s internal <see cref="PrefabBase"/> list we use <see cref="Traverse"/>
+        ///         After that, we leverage <see cref="World.GetOrCreateSystemManaged{T}"/> to get our target <see cref="prefabSystem"/>.
+        ///         From there, to get <see cref="prefabSystem"/>'s internal <see cref="PrefabBase"/> list we use <see cref="Traverse"/>
         ///         again and we extract the <b>m_Prefabs</b> field.
         ///     </para>
         ///     <para>
@@ -102,7 +102,7 @@ namespace ExtendedRoadUpgrades.Patches
         {
             var logHeader = $"[{nameof(GameManager_InitializeThumbnails)}.{nameof(Prefix)}]";
 
-            if (PrefixExecuted)
+            if (prefixExecuted)
             {
                 Plugin.Logger.LogInfo($"{logHeader} Already executed before, skipping.");
                 return;
@@ -111,30 +111,33 @@ namespace ExtendedRoadUpgrades.Patches
             Plugin.Logger.LogInfo($"{logHeader} Started.");
 
             // Getting World instance
-            World = Traverse.Create(__instance).Field<World>("m_World").Value;
-            if (World == null)
+            world = Traverse.Create(__instance).Field<World>("m_World").Value;
+            if (world == null)
             {
                 Plugin.Logger.LogError($"{logHeader} Failed retrieving World instance, exiting.");
                 return;
             }
+
             Plugin.Logger.LogDebug($"{logHeader} Retrieved World instance.");
 
             // Getting PrefabSystem instance from World
-            PrefabSystem = World.GetExistingSystemManaged<PrefabSystem>();
-            if (PrefabSystem == null)
+            prefabSystem = world.GetExistingSystemManaged<PrefabSystem>();
+            if (prefabSystem == null)
             {
                 Plugin.Logger.LogError($"{logHeader} Failed retrieving PrefabSystem instance, exiting.");
                 return;
             }
+
             Plugin.Logger.LogDebug($"{logHeader} Retrieved PrefabSystem instance.");
 
             // Getting Prefabs list from PrefabSystem
-            var prefabs = Traverse.Create(PrefabSystem).Field<List<PrefabBase>>("m_Prefabs").Value;
+            var prefabs = Traverse.Create(prefabSystem).Field<List<PrefabBase>>("m_Prefabs").Value;
             if (prefabs == null || !prefabs.Any())
             {
                 Plugin.Logger.LogError($"{logHeader} Failed retrieving Prefabs list, exiting.");
                 return;
             }
+
             Plugin.Logger.LogDebug($"{logHeader} Retrieved Prefabs list.");
 
             // Getting the original Grass Prefab
@@ -144,6 +147,7 @@ namespace ExtendedRoadUpgrades.Patches
                 Plugin.Logger.LogError($"{logHeader} Failed retrieving the original Grass Prefab instance, exiting.");
                 return;
             }
+
             Plugin.Logger.LogDebug($"{logHeader} Retrieved the original Grass Prefab instance.");
 
             // Getting the original Grass Prefab's UIObject
@@ -153,6 +157,7 @@ namespace ExtendedRoadUpgrades.Patches
                 Plugin.Logger.LogError($"{logHeader} Failed retrieving the original Grass Prefab's UIObject instance, exiting.");
                 return;
             }
+
             Plugin.Logger.LogDebug($"{logHeader} Retrieved the original Grass Prefab's UIObject instance.");
 
             // We can now attach mod's base folder as a resource handler so that we can serve icons.
@@ -163,6 +168,7 @@ namespace ExtendedRoadUpgrades.Patches
                 Plugin.Logger.LogError($"{logHeader} Failed retrieving GameManager's GameUIResourceHandler instance, exiting.");
                 return;
             }
+
             Plugin.Logger.LogDebug($"{logHeader} Retrieved GameManager's GameUIResourceHandler instance.");
 
             // Add our mod's folder and name to the available handlers.
@@ -172,7 +178,7 @@ namespace ExtendedRoadUpgrades.Patches
             gameUIResourceHandler.HostLocationsMap.Add(
                 IconsResourceKey,
                 new List<string> {
-                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
+                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
                 }
             );
 
@@ -209,12 +215,13 @@ namespace ExtendedRoadUpgrades.Patches
                 Plugin.Logger.LogDebug($"{logHeader} [{upgradeMode.Id}] Created a custom UIObject for our cloned Prefab with name {clonedGrassUpgradePrefabUIObject.name} and icon {clonedGrassUpgradePrefabUIObject.m_Icon}.");
 
                 // Add the newly created UIObject component and then add the cloned Prefab to our PrefabSystem
-                clonedGrassUpgradePrefab.AddComponentFrom<UIObject>(clonedGrassUpgradePrefabUIObject);
-                if (!PrefabSystem.AddPrefab(clonedGrassUpgradePrefab))
+                clonedGrassUpgradePrefab.AddComponentFrom(clonedGrassUpgradePrefabUIObject);
+                if (!prefabSystem.AddPrefab(clonedGrassUpgradePrefab))
                 {
                     Plugin.Logger.LogError($"{logHeader} [{upgradeMode.Id}] Failed adding the cloned Prefab to PrefabSystem, exiting.");
                     return;
                 }
+
                 Plugin.Logger.LogInfo($"{logHeader} [{upgradeMode.Id}] Successfully created and added our cloned Prefab to PrefabSystem.");
             }
 
@@ -223,7 +230,7 @@ namespace ExtendedRoadUpgrades.Patches
             Plugin.Logger.LogInfo($"{logHeader} Ready to listen to GameManager loading events.");
 
             // Mark the Prefix as already executed
-            PrefixExecuted = true;
+            prefixExecuted = true;
 
             Plugin.Logger.LogInfo($"{logHeader} Completed.");
         }
@@ -264,7 +271,7 @@ namespace ExtendedRoadUpgrades.Patches
         {
             var logHeader = $"[{nameof(GameManager_InitializeThumbnails)}.{nameof(GameManager_onGameLoadingComplete)}]";
 
-            if (EventExecuted)
+            if (eventExecuted)
             {
                 Plugin.Logger.LogInfo($"{logHeader} Already executed before, skipping.");
                 return;
@@ -280,12 +287,13 @@ namespace ExtendedRoadUpgrades.Patches
             Plugin.Logger.LogInfo($"{logHeader} Started.");
 
             // Getting Prefabs list from PrefabSystem
-            var prefabs = Traverse.Create(PrefabSystem).Field<List<PrefabBase>>("m_Prefabs").Value;
+            var prefabs = Traverse.Create(prefabSystem).Field<List<PrefabBase>>("m_Prefabs").Value;
             if (prefabs == null || !prefabs.Any())
             {
                 Plugin.Logger.LogError($"{logHeader} Failed retrieving Prefabs list, exiting.");
                 return;
             }
+
             Plugin.Logger.LogDebug($"{logHeader} Retrieved Prefabs list.");
 
             // Getting the original Grass Prefab
@@ -295,16 +303,18 @@ namespace ExtendedRoadUpgrades.Patches
                 Plugin.Logger.LogError($"{logHeader} Failed retrieving the original Grass Prefab instance, exiting.");
                 return;
             }
+
             Plugin.Logger.LogDebug($"{logHeader} Retrieved the original Grass Prefab instance.");
 
             // Getting the original Grass Prefab's PlaceableNetData
-            var grassUpgradePrefabData = PrefabSystem.GetComponentData<PlaceableNetData>(grassUpgradePrefab);
+            var grassUpgradePrefabData = prefabSystem.GetComponentData<PlaceableNetData>(grassUpgradePrefab);
             if (grassUpgradePrefabData.Equals(default(PlaceableNetData)))
             {
                 // This type is not nullabe so we check equality with the default empty data
                 Plugin.Logger.LogError($"{logHeader} Failed retrieving the original Grass Prefab's PlaceableNetData instance, exiting.");
                 return;
             }
+
             Plugin.Logger.LogDebug($"{logHeader} Retrieved the original Grass Prefab's PlaceableNetData instance.");
 
             // We now have all the needed original objects to patch our clones
@@ -317,16 +327,18 @@ namespace ExtendedRoadUpgrades.Patches
                     Plugin.Logger.LogError($"{logHeader} [{upgradeMode.Id}] Failed retrieving the cloned Grass Prefab instance, exiting.");
                     return;
                 }
+
                 Plugin.Logger.LogDebug($"{logHeader} [{upgradeMode.Id}] Retrieved the cloned Grass Prefab instance.");
 
                 // Getting the cloned Grass Prefab's PlaceableNetData for the current upgrade mode
-                var clonedGrassUpgradePrefabData = PrefabSystem.GetComponentData<PlaceableNetData>(clonedGrassUpgradePrefab);
+                var clonedGrassUpgradePrefabData = prefabSystem.GetComponentData<PlaceableNetData>(clonedGrassUpgradePrefab);
                 if (clonedGrassUpgradePrefabData.Equals(default(PlaceableNetData)))
                 {
                     // This type is not nullabe so we check equality with the default empty data
                     Plugin.Logger.LogError($"{logHeader} [{upgradeMode.Id}] Failed retrieving the cloned Grass Prefab's PlaceableNetData instance, exiting.");
                     return;
                 }
+
                 Plugin.Logger.LogDebug($"{logHeader} [{upgradeMode.Id}] Retrieved the cloned Grass Prefab's PlaceableNetData instance.");
 
                 // Update the flags with the ones set in our upgrade mode
@@ -335,13 +347,13 @@ namespace ExtendedRoadUpgrades.Patches
                 clonedGrassUpgradePrefabData.m_UnsetUpgradeFlags = upgradeMode.m_UnsetUpgradeFlags;
 
                 // Persist the updated flags by replacing the ComponentData with the one we just created
-                PrefabSystem.AddComponentData(clonedGrassUpgradePrefab, clonedGrassUpgradePrefabData);
+                prefabSystem.AddComponentData(clonedGrassUpgradePrefab, clonedGrassUpgradePrefabData);
 
                 Plugin.Logger.LogInfo($"{logHeader} [{upgradeMode.Id}] Successfully set flags for our cloned Prefab to {clonedGrassUpgradePrefabData.m_SetUpgradeFlags.ToJSONString()} and {clonedGrassUpgradePrefabData.m_UnsetUpgradeFlags.ToJSONString()}.");
             }
 
             // Mark the Prefix as already executed
-            EventExecuted = true;
+            eventExecuted = true;
 
             Plugin.Logger.LogInfo($"{logHeader} Completed.");
         }

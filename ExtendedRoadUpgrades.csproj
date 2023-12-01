@@ -10,6 +10,9 @@
 	<Import Project="GlobalProperties.props" />
 
 	<PropertyGroup>
+		<Title>Extended Road Upgrades</Title>
+		<Authors>ST-Apps</Authors>
+		<Copyright>Copyright © 2023 ST-Apps (github.com/ST-Apps). All rights reserved.</Copyright>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<AssemblyName>ExtendedRoadUpgrades</AssemblyName>
 		<Description>A mod that enables multiple upgrade options for your roads.</Description>
@@ -143,6 +146,10 @@
 		<PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
 		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
 		<PackageReference Include="HarmonyX" Version="2.10.2"></PackageReference>
+		<PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(BepInExVersion)' == '6'">

@@ -1,11 +1,14 @@
-﻿
-using Game.Common;
-using Game;
-using HarmonyLib;
-using ExtendedRoadUpgrades.Systems;
-
-namespace ExtendedRoadUpgrades.Patches
+﻿namespace ExtendedRoadUpgrades.Patches
 {
+    using ExtendedRoadUpgrades.Systems;
+    using Game;
+    using Game.Common;
+    using HarmonyLib;
+
+    /// <summary>
+    ///     This patch hooks into the initial <see cref="SystemOrder.Initialize(Game.UpdateSystem)"/> to attach out custom
+    ///     <see cref="GameSystemBase"/> to the Update workflow.
+    /// </summary>
     [HarmonyPatch(typeof(SystemOrder), "Initialize")]
     class SystemOrder_Initialize
     {
