@@ -179,7 +179,7 @@
             this.m_ToolOutputBarrier.AddJobHandleForProducer(jobHandle2);
             this.Dependency = jobHandle2;
 #else
-            var jobHandle = nodeFixerJob.Schedule(m_UpdatedQuery, Dependency);
+            var jobHandle = nodeUpdateFixerJob.Schedule(m_UpdatedQuery, Dependency);
             m_ToolOutputBarrier.AddJobHandleForProducer(jobHandle);
             Dependency = jobHandle;
 #endif
