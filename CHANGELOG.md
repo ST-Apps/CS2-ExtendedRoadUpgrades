@@ -6,6 +6,12 @@
 
 > Please see the official [issue tracker](https://github.com/ST-Apps/CS2-ExtendedRoadUpgrades/issues).
 
+# 1.3.0
+
+- [ADD] Upgrades can now be applied to Pedestrian Paths, Bus Roads, Train/Tram Tracks
+- [ADD] Added Tunnel upgrade mode (be sure to properly raise terrain after to fix rendering!)
+- [FIX] Pillars between Raised and Elevated roads are now handled properly
+
 # 1.2.3
 
 - [FIX] Potential fix for some rare exception when selecting game tools

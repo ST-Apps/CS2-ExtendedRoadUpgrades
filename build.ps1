@@ -15,8 +15,8 @@ $ProjectName = $CsprojXml.SelectSingleNode('//PropertyGroup/AssemblyName').Inner
 $ProjectVersion = $CsprojXml.SelectSingleNode('//PropertyGroup/Version').InnerText
 
 # Define the paths
-$OutputPath = "dist"
-$ReleasesPath = "releases"
+$OutputPath = Join-Path -Path (Get-Location) -ChildPath ".\dist"
+$ReleasesPath = Join-Path -Path (Get-Location) -ChildPath ".\releases"
 
 # Create the "releases" folder if it doesn't exist
 if (-not (Test-Path $ReleasesPath -PathType Container)) {
@@ -40,7 +40,7 @@ function BuildAndPackage($version, $configuration) {
     dotnet build $CsprojPath.FullName /p:BepInExVersion=$version -c $configuration -o "$outputDir"
     
     # Define the contents for the ZIP files
-    $filesToInclude = @("0Harmony.dll", "$ProjectName.dll", "Icons")
+    $filesToInclude = @("0Harmony.dll", "$ProjectName.dll", "Icons", "CHANGELOG.md", "LICENSE")
     $filesToDelete = Get-ChildItem -Path $outputDir -Exclude $filesToInclude
 
     # Delete files
@@ -82,11 +82,22 @@ function BuildAndPackage($version, $configuration) {
         # Create a zip file
         $zipFileName = $outputName + "-thunderstore.zip"
         Compress-Archive -Path "$outputDir\*" -DestinationPath "$ReleasesPath\$zipFileName" -Force
+
+        # Remove icon.png file and readme.md
+        Remove-Item "$outputDir\icon.png"
+        Remove-Item "$outputDir\README.md"
+        Remove-Item "$outputDir\manifest.json"
+
+        # Remove icon.png and readme.md from files that must be included
+        $filesToInclude -= ("icon.png", "README.md")
     }
 
     # Create a zip file
     $zipFileName = $outputName + ".zip"
-    Compress-Archive -Path "$outputDir" -DestinationPath "$ReleasesPath\$zipFileName" -Force
+    # Compress-Archive -Path "$outputDir" -DestinationPath "$ReleasesPath\$zipFileName" -Force
+    Push-Location "$outputDir\.."
+    & "C:\Program Files\7-Zip\7z.exe" a -tzip "$ReleasesPath\$zipFileName" "$ProjectName\*" -aoa
+    Pop-Location
 }
 
 # Function to replace placeholders in the template

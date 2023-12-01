@@ -10,10 +10,13 @@
 	<Import Project="GlobalProperties.props" />
 
 	<PropertyGroup>
+		<Title>Extended Road Upgrades</Title>
+		<Authors>ST-Apps</Authors>
+		<Copyright>Copyright © 2023 ST-Apps (github.com/ST-Apps). All rights reserved.</Copyright>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<AssemblyName>ExtendedRoadUpgrades</AssemblyName>
 		<Description>A mod that enables multiple upgrade options for your roads.</Description>
-		<Version>1.2.3</Version>
+		<Version>1.3.0</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>latest</LangVersion>
 		<RestoreAdditionalProjectSources>
@@ -33,11 +36,17 @@
 		<Cities2_Location>D:\Games\SteamLibrary\steamapps\common\Cities Skylines II</Cities2_Location>
 	</PropertyGroup>
 	<ItemGroup>
+	  <None Remove="CHANGELOG.md" />
 	  <None Remove="Icons\Elevated.svg" />
 	  <None Remove="Icons\Quay.svg" />
 	  <None Remove="Icons\RetainingWall.svg" />
+	  <None Remove="Icons\Tunnel.svg" />
+	  <None Remove="LICENSE" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Content Include="CHANGELOG.md">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
 	  <Content Include="Icons\Quay.svg">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
@@ -45,6 +54,12 @@
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
 	  <Content Include="Icons\Elevated.svg">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Icons\Tunnel.svg">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="LICENSE">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
 	</ItemGroup>
@@ -143,6 +158,10 @@
 		<PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
 		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
 		<PackageReference Include="HarmonyX" Version="2.10.2"></PackageReference>
+		<PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(BepInExVersion)' == '6'">
