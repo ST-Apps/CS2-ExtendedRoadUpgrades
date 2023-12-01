@@ -36,12 +36,17 @@
 		<Cities2_Location>D:\Games\SteamLibrary\steamapps\common\Cities Skylines II</Cities2_Location>
 	</PropertyGroup>
 	<ItemGroup>
+	  <None Remove="CHANGELOG.md" />
 	  <None Remove="Icons\Elevated.svg" />
 	  <None Remove="Icons\Quay.svg" />
 	  <None Remove="Icons\RetainingWall.svg" />
 	  <None Remove="Icons\Tunnel.svg" />
+	  <None Remove="LICENSE" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Content Include="CHANGELOG.md">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
 	  <Content Include="Icons\Quay.svg">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
@@ -52,6 +57,9 @@
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
 	  <Content Include="Icons\Tunnel.svg">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="LICENSE">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
 	</ItemGroup>
