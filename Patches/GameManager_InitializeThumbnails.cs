@@ -5,6 +5,7 @@
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    using cohtml.Net;
     using Colossal.Json;
     using Game.Prefabs;
     using Game.SceneFlow;
