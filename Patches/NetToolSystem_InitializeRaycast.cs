@@ -12,13 +12,13 @@
     ///         The following flags are added:
     ///         <list type="bullet">
     ///             <ul>
-    ///                 <see cref="Game.Net.Layer.Pathway"/> - enables upgrading pedestrian paths
+    ///                 <see cref="Layer.Pathway"/> - enables upgrading pedestrian paths
     ///             </ul>
     ///             <ul>
-    ///                 <see cref="Game.Net.Layer.TrainTrack"/> - enables upgrading train tracks paths
+    ///                 <see cref="Layer.TrainTrack"/> - enables upgrading train tracks paths
     ///             </ul>
     ///             <ul>
-    ///                 <see cref="Game.Net.Layer.PublicTransportRoad"/> - enables upgrading bus roads
+    ///                 <see cref="Layer.PublicTransportRoad"/> - enables upgrading bus roads
     ///             </ul>
     ///         </list>
     ///     </para>
@@ -30,7 +30,7 @@
         {
             if (__instance.actualMode == NetToolSystem.Mode.Replace)
             {
-                ___m_ToolRaycastSystem.netLayerMask |= Game.Net.Layer.Pathway | Game.Net.Layer.TrainTrack | Layer.PublicTransportRoad | Game.Net.Layer.TramTrack;
+                ___m_ToolRaycastSystem.netLayerMask |= Layer.Pathway | Layer.TrainTrack | Layer.PublicTransportRoad | Layer.TramTrack | Layer.SubwayTrack;
             }
         }
 
