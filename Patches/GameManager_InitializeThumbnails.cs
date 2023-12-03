@@ -279,7 +279,7 @@
             }
 
             // Execute in Game mode only
-            if (mode != Game.GameMode.Game)
+            if (mode != Game.GameMode.GameOrEditor)
             {
                 Plugin.Logger.LogInfo($"{logHeader} Game mode is {mode}, skipping.");
                 return;
