@@ -6,6 +6,10 @@
 
 > Please see the official [issue tracker](https://github.com/ST-Apps/CS2-ExtendedRoadUpgrades/issues).
 
+# 1.3.3
+
+- [FIX] Improved handling for Quay roundabouts (still not perfect but better than before)
+
 # 1.3.2
 
 - [FIX] Mod not loading properly after v1.3.1
