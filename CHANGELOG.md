@@ -6,6 +6,12 @@
 
 > Please see the official [issue tracker](https://github.com/ST-Apps/CS2-ExtendedRoadUpgrades/issues).
 
+# 1.3.1
+
+- [ADD] Upgrades can now be applied to Subway Tracks also
+- [ADD] Experimental support for Editor mode
+- [FIX] Tunnel roads can now be removed/upgraded properly
+
 # 1.3.0
 
 - [ADD] Upgrades can now be applied to Pedestrian Paths, Bus Roads, Train/Tram Tracks

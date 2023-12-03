@@ -279,7 +279,7 @@
             }
 
             // Execute in Game mode only
-            if (mode != Game.GameMode.Game)
+            if (mode != Game.GameMode.GameOrEditor)
             {
                 Plugin.Logger.LogInfo($"{logHeader} Game mode is {mode}, skipping.");
                 return;
@@ -344,8 +344,15 @@
 
                 // Update the flags with the ones set in our upgrade mode
                 clonedGrassUpgradePrefabData.m_SetUpgradeFlags = upgradeMode.m_SetUpgradeFlags;
+
                 // TODO: this works even without the unset flags, keeping them there just in case
                 clonedGrassUpgradePrefabData.m_UnsetUpgradeFlags = upgradeMode.m_UnsetUpgradeFlags;
+
+                // This toggles underground mode for our custom upgrade modes
+                if (upgradeMode.IsUnderground)
+                {
+                    clonedGrassUpgradePrefabData.m_PlacementFlags |= Game.Net.PlacementFlags.UndergroundUpgrade;
+                }
 
                 // Persist the updated flags by replacing the ComponentData with the one we just created
                 prefabSystem.AddComponentData(clonedGrassUpgradePrefab, clonedGrassUpgradePrefabData);
