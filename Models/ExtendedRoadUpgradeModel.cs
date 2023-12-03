@@ -37,6 +37,15 @@
         }
 
         /// <summary>
+        ///     Gets or sets a value indicating whether the current upgrade mode supports Underground also.
+        /// </summary>
+        public bool IsUnderground
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         ///     Gets or sets the <see cref="CompositionFlags"/> that must be added during the upgrade phase.
         /// </summary>
         public CompositionFlags m_SetUpgradeFlags

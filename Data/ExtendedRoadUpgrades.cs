@@ -154,6 +154,7 @@
                         "Tunnel mode, it might not look perfect but it works."
                     },
                 },
+                IsUnderground = true,
                 m_SetUpgradeFlags = new CompositionFlags
                 {
                     m_General = CompositionFlags.General.Tunnel,
