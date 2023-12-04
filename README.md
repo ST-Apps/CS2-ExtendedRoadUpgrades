@@ -80,3 +80,8 @@ Many thanks to the people of [Cities 2 Modding](https://discord.gg/DZaSSnRG) and
 communities for their help and pointers that helped me developing this mod.
 
 Special thanks to [Chamëleon TBN](https://github.com/chameleon-tbn) for his beautiful icons and to [Captain of Coit](https://github.com/Captain-Of-Coit) for his mod template.
+
+## Localization
+
+- **zh-HANS** provided by [MaxHasBeenUsed](https://github.com/MaxHasBeenUsed)
+- **zh-HANT** provided by [MaxHasBeenUsed](https://github.com/MaxHasBeenUsed)
