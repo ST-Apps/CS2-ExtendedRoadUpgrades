@@ -293,8 +293,8 @@
                         this.m_NetCompositionData.TryGetComponent(currentEdgeComposition.m_StartNode, out var currentEdgeStartNodeCompositionData) &&
                         this.m_NetCompositionData.TryGetComponent(currentEdgeComposition.m_EndNode, out var currentEdgeEndNodeCompositionData))
                     {
-                        this.ProcessConnectedEdges(currentEdge.m_Start, currentEdgeComposition.m_StartNode, currentEdgeStartNodeCompositionData, currentEdgeNetCompositionData, true);
-                        this.ProcessConnectedEdges(currentEdge.m_End, currentEdgeComposition.m_EndNode, currentEdgeEndNodeCompositionData, currentEdgeNetCompositionData, false);
+                        this.ProcessConnectedEdges(currentEdge.m_Start, currentEdgeComposition.m_Edge, currentEdgeComposition.m_StartNode, currentEdgeStartNodeCompositionData, currentEdgeNetCompositionData, true);
+                        this.ProcessConnectedEdges(currentEdge.m_End, currentEdgeComposition.m_Edge, currentEdgeComposition.m_EndNode, currentEdgeEndNodeCompositionData, currentEdgeNetCompositionData, false);
                     }
                 }
             }
@@ -369,7 +369,7 @@
             /// <param name="currentCompositionNodeEntity"><see cref="Node"/> <see cref="Entity"/> taken from an <see cref="Composition"/>.</param>
             /// <param name="currentNodeNetCompositionData"></param>
             /// <param name="isStartNode"></param>
-            private void ProcessConnectedEdges(Entity currentEdgeNodeEntity, Entity currentCompositionNodeEntity, NetCompositionData currentNodeNetCompositionData, NetCompositionData currentEdgeNetCompositionData, bool isStartNode)
+            private void ProcessConnectedEdges(Entity currentEdgeNodeEntity, Entity currentCompositionEdgeEntity, Entity currentCompositionNodeEntity, NetCompositionData currentNodeNetCompositionData, NetCompositionData currentEdgeNetCompositionData, bool isStartNode)
             {
                 // If we're on a DeadEnd node we need to check both of its sides.
                 // If both have a Lowered flag then we need to remove the LowTransition flag on both sides.
@@ -377,6 +377,7 @@
                 {
                     this.UpgradeFlags(ref currentEdgeNetCompositionData, ref currentNodeNetCompositionData, ref currentEdgeNetCompositionData, ref currentNodeNetCompositionData);
                     this.m_CommandBuffer.SetComponent(currentCompositionNodeEntity, currentNodeNetCompositionData);
+                    this.m_CommandBuffer.SetComponent(currentCompositionEdgeEntity, currentEdgeNetCompositionData);
                 }
 
                 foreach (var connectedEdge in this.ConnectedEdges(currentEdgeNodeEntity))
@@ -395,6 +396,7 @@
                     {
                         // Setting components
                         this.m_CommandBuffer.SetComponent(currentCompositionNodeEntity, currentNodeNetCompositionData);
+                        this.m_CommandBuffer.SetComponent(currentCompositionEdgeEntity, currentEdgeNetCompositionData);
                         this.m_CommandBuffer.SetComponent(isStartNode ? connectedEdgeComposition.m_EndNode : connectedEdgeComposition.m_StartNode, connectedNodeNetCompositionData);
 #if DEBUG
                         this.DebugDrawGizmos(connectedEdge, isStartNode ? Color.green : Color.blue);
@@ -463,6 +465,23 @@
                     {
                         m_Left = CompositionFlags.Side.LowTransition,
                         m_Right = CompositionFlags.Side.LowTransition,
+                    });
+                }
+
+                // This fixes holes when two Tunnel edges connect
+                if (HasFlags(currentNodeNetCompositionData, CompositionFlags.General.Tunnel) &&
+                    HasFlags(connectedNodeNetCompositionData, CompositionFlags.General.Tunnel))
+                {
+                    this.UpgradeFlags(ref currentNodeNetCompositionData, default, new CompositionFlags
+                    {
+                        m_Left = CompositionFlags.Side.HighTransition,
+                        m_Right = CompositionFlags.Side.HighTransition,
+                    });
+
+                    this.UpgradeFlags(ref connectedNodeNetCompositionData, default, new CompositionFlags
+                    {
+                        m_Left = CompositionFlags.Side.HighTransition,
+                        m_Right = CompositionFlags.Side.HighTransition,
                     });
                 }
 
