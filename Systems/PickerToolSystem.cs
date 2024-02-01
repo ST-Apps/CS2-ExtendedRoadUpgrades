@@ -114,7 +114,7 @@ namespace ExtendedRoadUpgrades.Systems
             base.InitializeRaycast();
             m_ToolRaycastSystem.typeMask = TypeMask.StaticObjects | TypeMask.Net;
             m_ToolRaycastSystem.netLayerMask = Layer.All;
-            m_ToolRaycastSystem.collisionMask = CollisionMask.OnGround | CollisionMask.Overground;
+            m_ToolRaycastSystem.collisionMask = CollisionMask.OnGround | CollisionMask.Overground | CollisionMask.Underground;
 
             m_ToolRaycastSystem.raycastFlags |= RaycastFlags.SubElements;
 

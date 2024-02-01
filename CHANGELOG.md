@@ -6,6 +6,11 @@
 
 > Please see the official [issue tracker](https://github.com/ST-Apps/CS2-ExtendedRoadUpgrades/issues).
 
+# 1.3.3
+
+- [FIX] Improved handling for Quay roundabouts (still not perfect but better than before)
+- [ADD] Added **zh-HANS** and **zh-HANT** localization (thanks to [MaxHasBeenUsed](https://github.com/MaxHasBeenUsed))
+
 # 1.3.2
 
 - [FIX] Mod not loading properly after v1.3.1
