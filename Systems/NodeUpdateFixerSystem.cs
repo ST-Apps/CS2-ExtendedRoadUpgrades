@@ -6,6 +6,7 @@
     using System.Runtime.CompilerServices;
     using Colossal;
     using Colossal.Json;
+    using ExtendedRoadUpgrades.Utils;
     using Game;
     using Game.Common;
     using Game.Net;
@@ -263,13 +264,6 @@
             public ComponentLookup<Node> m_NodeData;
 #endif
 
-            public enum SideOption
-            {
-                Left,
-                Right,
-                Both,
-                Any,
-            }
 
             /// <summary>
             ///     Main entrypoint for the job, it processes both start <see cref="Node"/> and end <see cref="Node"/> for any <see cref="Updated"/> <see cref="Edge"/>.
@@ -318,28 +312,6 @@
                 }
             }
 
-            private bool HasFlags(NetCompositionData netCompositionData, CompositionFlags.Side sideCompositionFlag, SideOption sideOption)
-            {
-                switch (sideOption)
-                {
-                    case SideOption.Left:
-                        return netCompositionData.m_Flags.m_Left.HasFlag(sideCompositionFlag);
-                    case SideOption.Right:
-                        return netCompositionData.m_Flags.m_Right.HasFlag(sideCompositionFlag);
-                    case SideOption.Both:
-                        return netCompositionData.m_Flags.m_Left.HasFlag(sideCompositionFlag) && netCompositionData.m_Flags.m_Right.HasFlag(sideCompositionFlag);
-                    case SideOption.Any:
-                        return netCompositionData.m_Flags.m_Left.HasFlag(sideCompositionFlag) || netCompositionData.m_Flags.m_Right.HasFlag(sideCompositionFlag);
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(sideOption), sideOption, null);
-                }
-            }
-
-            private bool HasFlags(NetCompositionData netCompositionData, CompositionFlags.General generalCompositionFlags)
-            {
-                return netCompositionData.m_Flags.m_General.HasFlag(generalCompositionFlags);
-            }
-
             /// <summary>
             ///     Checks for matches between two <see cref="NetCompositionData.m_Flags"/>.
             ///     Flags match if they're equal or, if on a start <see cref="Node"/> or on a <see cref="Node"/> with the <see cref="CompositionFlags.General.Invert"/>,
@@ -369,13 +341,19 @@
             /// <param name="currentCompositionNodeEntity"><see cref="Node"/> <see cref="Entity"/> taken from an <see cref="Composition"/>.</param>
             /// <param name="currentNodeNetCompositionData"></param>
             /// <param name="isStartNode"></param>
-            private void ProcessConnectedEdges(Entity currentEdgeNodeEntity, Entity currentCompositionEdgeEntity, Entity currentCompositionNodeEntity, NetCompositionData currentNodeNetCompositionData, NetCompositionData currentEdgeNetCompositionData, bool isStartNode)
+            private void ProcessConnectedEdges(
+                Entity currentEdgeNodeEntity,
+                Entity currentCompositionEdgeEntity,
+                Entity currentCompositionNodeEntity,
+                NetCompositionData currentNodeNetCompositionData,
+                NetCompositionData currentEdgeNetCompositionData,
+                bool isStartNode)
             {
                 // If we're on a DeadEnd node we need to check both of its sides.
                 // If both have a Lowered flag then we need to remove the LowTransition flag on both sides.
                 if (currentNodeNetCompositionData.m_Flags.m_General.HasFlag(CompositionFlags.General.DeadEnd))
                 {
-                    this.UpgradeFlags(ref currentEdgeNetCompositionData, ref currentNodeNetCompositionData, ref currentEdgeNetCompositionData, ref currentNodeNetCompositionData);
+                    NetCompositionDataUtils.UpgradeFlags(ref currentEdgeNetCompositionData, ref currentNodeNetCompositionData, ref currentEdgeNetCompositionData, ref currentNodeNetCompositionData);
                     this.m_CommandBuffer.SetComponent(currentCompositionNodeEntity, currentNodeNetCompositionData);
                     this.m_CommandBuffer.SetComponent(currentCompositionEdgeEntity, currentEdgeNetCompositionData);
                 }
@@ -387,161 +365,25 @@
                         this.m_NetCompositionData.TryGetComponent(isStartNode ? connectedEdgeComposition.m_EndNode : connectedEdgeComposition.m_StartNode, out var connectedNodeNetCompositionData) &&
 
                         // True if flags are updated, otherwise we don't need to do anything else
-                        this.UpgradeFlags(
+                        NetCompositionDataUtils.UpgradeFlags(
                             ref currentEdgeNetCompositionData,
                             ref currentNodeNetCompositionData,
                             ref connectedEdgeNetCompositionData,
-                            ref connectedNodeNetCompositionData,
-                            this.FlagsMatch(isStartNode ? currentNodeNetCompositionData : connectedNodeNetCompositionData, isStartNode ? connectedNodeNetCompositionData : currentNodeNetCompositionData, isStartNode)))
+                            ref connectedNodeNetCompositionData))
                     {
+                        var connectedCompositionNodeEntity = isStartNode ? connectedEdgeComposition.m_EndNode : connectedEdgeComposition.m_StartNode;
+                        var connectedCompositionEdgeEntity = connectedEdgeComposition.m_Edge;
+
                         // Setting components
                         this.m_CommandBuffer.SetComponent(currentCompositionNodeEntity, currentNodeNetCompositionData);
                         this.m_CommandBuffer.SetComponent(currentCompositionEdgeEntity, currentEdgeNetCompositionData);
-                        this.m_CommandBuffer.SetComponent(isStartNode ? connectedEdgeComposition.m_EndNode : connectedEdgeComposition.m_StartNode, connectedNodeNetCompositionData);
+                        this.m_CommandBuffer.SetComponent(connectedCompositionNodeEntity, connectedNodeNetCompositionData);
+                        this.m_CommandBuffer.SetComponent(connectedCompositionEdgeEntity, connectedEdgeNetCompositionData);
 #if DEBUG
                         this.DebugDrawGizmos(connectedEdge, isStartNode ? Color.green : Color.blue);
 #endif
                     }
                 }
-            }
-
-            /// <summary>
-            ///     Updates all the <see cref="CompositionFlags"/> for the specified <see cref="NetCompositionData"/>.
-            /// </summary>
-            /// <param name="netCompositionData"></param>
-            /// <param name="added"></param>
-            /// <param name="removed"></param>
-            private void UpgradeFlags(ref NetCompositionData netCompositionData, CompositionFlags added, CompositionFlags removed)
-            {
-                netCompositionData.m_Flags.m_General |= added.m_General;
-                netCompositionData.m_Flags.m_General &= ~removed.m_General;
-
-                netCompositionData.m_Flags.m_Left |= added.m_Left;
-                netCompositionData.m_Flags.m_Left &= ~removed.m_Left;
-
-                netCompositionData.m_Flags.m_Right |= added.m_Right;
-                netCompositionData.m_Flags.m_Right &= ~removed.m_Right;
-            }
-
-            /// <summary>
-            ///     Performs the actual upgrading logic by comparing two <see cref="NetCompositionData"/> and deciding which <see cref="CompositionFlags"/>
-            ///     to set and unset.
-            /// </summary>
-            /// <param name="currentNodeNetCompositionData"></param>
-            /// <param name="connectedNodeNetCompositionData"></param>
-            /// <param name="isDeadEndNode"></param>
-            /// <param name="areFlagsMatching"></param>
-            /// <returns></returns>
-            private bool UpgradeFlags(ref NetCompositionData currentEdgeNetCompositionData, ref NetCompositionData currentNodeNetCompositionData, ref NetCompositionData connectedEdgeNetCompositionData, ref NetCompositionData connectedNodeNetCompositionData, bool isDeadEndNode = false, bool areFlagsMatching = false)
-            {
-                if (!isDeadEndNode && !areFlagsMatching)
-                {
-                    // TODO: implement proper logic based on different cases rather than removing LowTransition regardless of the scenario
-                    return false;
-                }
-
-                // This fix holes in Retaining Walls for DeadEnd nodes
-                if (isDeadEndNode &&
-                    HasFlags(currentNodeNetCompositionData, CompositionFlags.Side.Lowered, SideOption.Both))
-                {
-                    this.UpgradeFlags(ref currentNodeNetCompositionData, default, new CompositionFlags
-                    {
-                        m_Left = CompositionFlags.Side.LowTransition,
-                        m_Right = CompositionFlags.Side.LowTransition,
-                    });
-                }
-
-                // This fixes holes in Retaining Walls when two Lowered edges connect
-                if (HasFlags(currentNodeNetCompositionData, CompositionFlags.Side.Lowered, SideOption.Any) &&
-                    HasFlags(connectedNodeNetCompositionData, CompositionFlags.Side.Lowered, SideOption.Any))
-                {
-                    this.UpgradeFlags(ref currentNodeNetCompositionData, default, new CompositionFlags
-                    {
-                        m_Left = CompositionFlags.Side.LowTransition,
-                        m_Right = CompositionFlags.Side.LowTransition,
-                    });
-
-                    this.UpgradeFlags(ref connectedNodeNetCompositionData, default, new CompositionFlags
-                    {
-                        m_Left = CompositionFlags.Side.LowTransition,
-                        m_Right = CompositionFlags.Side.LowTransition,
-                    });
-                }
-
-                // This fixes holes when two Tunnel edges connect
-                if (HasFlags(currentNodeNetCompositionData, CompositionFlags.General.Tunnel) &&
-                    HasFlags(connectedNodeNetCompositionData, CompositionFlags.General.Tunnel))
-                {
-                    this.UpgradeFlags(ref currentNodeNetCompositionData, default, new CompositionFlags
-                    {
-                        m_Left = CompositionFlags.Side.HighTransition,
-                        m_Right = CompositionFlags.Side.HighTransition,
-                    });
-
-                    this.UpgradeFlags(ref connectedNodeNetCompositionData, default, new CompositionFlags
-                    {
-                        m_Left = CompositionFlags.Side.HighTransition,
-                        m_Right = CompositionFlags.Side.HighTransition,
-                    });
-                }
-
-                // This fixes pillars when Raised edges connect to Elevated ones
-                if (HasFlags(currentNodeNetCompositionData, CompositionFlags.Side.Raised, SideOption.Any) &&
-                    HasFlags(connectedNodeNetCompositionData, CompositionFlags.General.Elevated))
-                {
-                    this.UpgradeFlags(
-                        ref currentNodeNetCompositionData,
-                        new CompositionFlags
-                        {
-                            m_Left = CompositionFlags.Side.LowTransition,
-                            m_Right = CompositionFlags.Side.LowTransition,
-                        },
-                        default);
-
-                    this.UpgradeFlags(
-                        ref connectedNodeNetCompositionData,
-                        new CompositionFlags
-                        {
-                            m_Left = CompositionFlags.Side.LowTransition,
-                            m_Right = CompositionFlags.Side.LowTransition,
-                        },
-                        default);
-                }
-
-                // This fixes roundabouts Raised edges connect to other Raised ones
-                if (HasFlags(currentNodeNetCompositionData, CompositionFlags.Side.Raised, SideOption.Any) &&
-                    HasFlags(connectedNodeNetCompositionData, CompositionFlags.Side.Raised, SideOption.Any) &&
-                        (HasFlags(currentNodeNetCompositionData, CompositionFlags.General.Roundabout) ||
-                        HasFlags(connectedNodeNetCompositionData, CompositionFlags.General.Roundabout)))
-                {
-                    this.UpgradeFlags(
-                        ref currentNodeNetCompositionData,
-                        new CompositionFlags
-                        {
-                            m_Left = CompositionFlags.Side.Sidewalk | CompositionFlags.Side.Raised,
-                            m_Right = CompositionFlags.Side.Sidewalk | CompositionFlags.Side.Raised,
-                        },
-                        new CompositionFlags
-                        {
-                            m_Left = CompositionFlags.Side.LowTransition,
-                            m_Right = CompositionFlags.Side.LowTransition,
-                        });
-
-                    this.UpgradeFlags(
-                        ref connectedNodeNetCompositionData,
-                        new CompositionFlags
-                        {
-                            m_Left = CompositionFlags.Side.Sidewalk | CompositionFlags.Side.Raised,
-                            m_Right = CompositionFlags.Side.Sidewalk | CompositionFlags.Side.Raised,
-                        },
-                        new CompositionFlags
-                        {
-                            m_Left = CompositionFlags.Side.LowTransition,
-                            m_Right = CompositionFlags.Side.LowTransition,
-                        });
-                }
-
-                return true;
             }
 
 #if DEBUG
