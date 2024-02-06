@@ -13,6 +13,7 @@ using UnityEngine.Scripting;
 using Unity.Jobs;
 using Colossal.Json;
 using static Colossal.IO.AssetDatabase.AtlasFrame;
+using ExtendedRoadUpgrades.Prefabs;
 
 namespace ExtendedRoadUpgrades.Systems
 {
@@ -38,6 +39,9 @@ namespace ExtendedRoadUpgrades.Systems
 
         [ReadOnly]
         ComponentLookup<NetCompositionData> netCompositionDataLookup;
+
+        [ReadOnly]
+        ComponentLookup<NetCompositionFlagsData> netCompositionFlagsDataLookup;
 
         private void CreateKeyBinding()
         {
@@ -76,6 +80,7 @@ namespace ExtendedRoadUpgrades.Systems
             edgeDataLookup = GetComponentLookup<Edge>(true);
             compositionDataLookup = GetComponentLookup<Composition>(true);
             netCompositionDataLookup = GetComponentLookup<NetCompositionData>(true);
+            netCompositionFlagsDataLookup = GetComponentLookup<NetCompositionFlagsData>(true);
         }
 
         [Preserve]
@@ -93,6 +98,21 @@ namespace ExtendedRoadUpgrades.Systems
                     Plugin.Logger.LogInfo($"\tFound edge composition: {edgeComposition.ToJSONString()}");
                     Plugin.Logger.LogInfo($"\tFound start composition: {startNodeComposition.ToJSONString()}");
                     Plugin.Logger.LogInfo($"\tFound end composition: {endNodeComposition.ToJSONString()}");
+
+                    if (netCompositionFlagsDataLookup.TryGetComponent(composition.m_Edge, out var edgeFlagCompositionData))
+                    {
+                        Plugin.Logger.LogInfo($"\tFound edge FLAG: {edgeFlagCompositionData.ToJSONString()}");
+                    }
+
+                    if (netCompositionFlagsDataLookup.TryGetComponent(composition.m_StartNode, out var startFlagCompositionData))
+                    {
+                        Plugin.Logger.LogInfo($"\tFound start FLAG: {startFlagCompositionData.ToJSONString()}");
+                    }
+
+                    if (netCompositionFlagsDataLookup.TryGetComponent(composition.m_EndNode, out var endFlagCompositionData))
+                    {
+                        Plugin.Logger.LogInfo($"\tFound end FLAG: {endFlagCompositionData.ToJSONString()}");
+                    }
                 }
             }
 

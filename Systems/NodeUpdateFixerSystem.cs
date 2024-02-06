@@ -6,6 +6,7 @@
     using System.Runtime.CompilerServices;
     using Colossal;
     using Colossal.Json;
+    using ExtendedRoadUpgrades.Prefabs;
     using ExtendedRoadUpgrades.Utils;
     using Game;
     using Game.Common;
@@ -91,6 +92,8 @@
         #endregion
 
         #region GameSystemBase
+
+        readonly public static int kComponentVersion = 1;
 
         [Preserve]
         public NodeUpdateFixerSystem()
@@ -287,8 +290,8 @@
                         this.m_NetCompositionData.TryGetComponent(currentEdgeComposition.m_StartNode, out var currentEdgeStartNodeCompositionData) &&
                         this.m_NetCompositionData.TryGetComponent(currentEdgeComposition.m_EndNode, out var currentEdgeEndNodeCompositionData))
                     {
-                        this.ProcessConnectedEdges(currentEdge.m_Start, currentEdgeComposition.m_Edge, currentEdgeComposition.m_StartNode, currentEdgeStartNodeCompositionData, currentEdgeNetCompositionData, true);
-                        this.ProcessConnectedEdges(currentEdge.m_End, currentEdgeComposition.m_Edge, currentEdgeComposition.m_EndNode, currentEdgeEndNodeCompositionData, currentEdgeNetCompositionData, false);
+                        this.ProcessConnectedEdges(currentEdgeEntity, currentEdge.m_Start, currentEdgeComposition.m_Edge, currentEdgeComposition.m_StartNode, currentEdgeStartNodeCompositionData, currentEdgeNetCompositionData, true);
+                        this.ProcessConnectedEdges(currentEdgeEntity, currentEdge.m_End, currentEdgeComposition.m_Edge, currentEdgeComposition.m_EndNode, currentEdgeEndNodeCompositionData, currentEdgeNetCompositionData, false);
                     }
                 }
             }
@@ -313,27 +316,6 @@
             }
 
             /// <summary>
-            ///     Checks for matches between two <see cref="NetCompositionData.m_Flags"/>.
-            ///     Flags match if they're equal or, if on a start <see cref="Node"/> or on a <see cref="Node"/> with the <see cref="CompositionFlags.General.Invert"/>,
-            ///     if the inverted start <see cref="CompositionFlags"/> is equal to end's one.
-            /// </summary>
-            /// <param name="startComposition"></param>
-            /// <param name="endComposition"></param>
-            /// <param name="isStartNode"></param>
-            /// <returns></returns>
-            private bool FlagsMatch(NetCompositionData startComposition, NetCompositionData endComposition, bool isStartNode)
-            {
-                // Start nodes will require flags to be inverted before any operation.
-                // TODO: is this true or does this apply to nodes that have the Invert flag only?
-                var startCompositionFlags = isStartNode || startComposition.m_Flags.m_General.HasFlag(CompositionFlags.General.Invert) ?
-                    NetCompositionHelpers.InvertCompositionFlags(startComposition.m_Flags) :
-                    startComposition.m_Flags;
-
-                return startCompositionFlags.m_Left == endComposition.m_Flags.m_Left ||
-                    startCompositionFlags.m_Right == endComposition.m_Flags.m_Right;
-            }
-
-            /// <summary>
             ///     Iterates over the <see cref="ConnectedEdge"/>s for the current <see cref="Node"/> <see cref="Entity"/> and updates their <see cref="CompositionFlags"/> accordingly.
             ///     For <see cref="CompositionFlags.General.DeadEnd"/> <see cref="Node"/>s we only process the <see cref="Node"/> itself.
             /// </summary>
@@ -342,6 +324,7 @@
             /// <param name="currentNodeNetCompositionData"></param>
             /// <param name="isStartNode"></param>
             private void ProcessConnectedEdges(
+                Entity currentEdgeEntity,
                 Entity currentEdgeNodeEntity,
                 Entity currentCompositionEdgeEntity,
                 Entity currentCompositionNodeEntity,
@@ -379,6 +362,12 @@
                         this.m_CommandBuffer.SetComponent(currentCompositionEdgeEntity, currentEdgeNetCompositionData);
                         this.m_CommandBuffer.SetComponent(connectedCompositionNodeEntity, connectedNodeNetCompositionData);
                         this.m_CommandBuffer.SetComponent(connectedCompositionEdgeEntity, connectedEdgeNetCompositionData);
+
+                        // Set the custom NetCompositionData Component so that we can reapply it on load
+                        this.m_CommandBuffer.AddComponent(currentEdgeNodeEntity, new NetCompositionFlagsData(currentNodeNetCompositionData));
+                        this.m_CommandBuffer.AddComponent(currentEdgeEntity, new NetCompositionFlagsData(currentEdgeNetCompositionData));
+                        this.m_CommandBuffer.AddComponent(connectedCompositionNodeEntity, new NetCompositionFlagsData(connectedNodeNetCompositionData));
+                        this.m_CommandBuffer.AddComponent(connectedCompositionEdgeEntity, new NetCompositionFlagsData(connectedEdgeNetCompositionData));
 #if DEBUG
                         this.DebugDrawGizmos(connectedEdge, isStartNode ? Color.green : Color.blue);
 #endif
