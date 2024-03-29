@@ -1,0 +1,13 @@
+{
+  "$schema": "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/master/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
+  "settings": {
+    "documentationRules": {
+      "companyName": "ST-Apps (S. Tenuta)",
+      "copyrightText": "Copyright (c) {companyName}. All rights reserved.\nLicensed under the {licenseName} (the \"License\"); you may not use this file except in compliance with the License.\nSee {licenseFile} file in the project root for full license information.",
+      "variables": {
+        "licenseName": "Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License",
+        "licenseFile": "LICENSE.txt"
+      }
+    }
+  }
+}
