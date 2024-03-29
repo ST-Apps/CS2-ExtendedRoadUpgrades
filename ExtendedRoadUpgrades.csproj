@@ -12,7 +12,7 @@
 		<TargetFramework>net472</TargetFramework>
 		<LangVersion>latest</LangVersion>
 		<Configurations>Debug;Release</Configurations>
-		<PDXAccountDataPath>$(USERPROFILE)\Documents\pdx_account.txt</PDXAccountDataPath>
+		<PDXAccountDataPath>D:\pdx_account.txt</PDXAccountDataPath>
 		<PublishConfigurationPath>Properties\PublishConfiguration.xml</PublishConfigurationPath>
 	</PropertyGroup>
 
