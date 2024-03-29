@@ -1,10 +1,12 @@
-> We're in the early stages of C:S2 modding and the tooling is not ready yet so please take this mod as it is and accept any issue.
->
-> This mod might mess up your save game. If this happens and some of your roads are acting weird you can bulldoze and recreate them to fix any issue.
-
 ## Known Issues
 
 > Please see the official [issue tracker](https://github.com/ST-Apps/CS2-ExtendedRoadUpgrades/issues).
+
+# 1.4.0
+
+- [FIX] Improved handling for Raised roundabouts
+- [FIX] Improved handling for connected Tunnels
+- [ADD] Localization for ZH-HANS and ZH-HANT
 
 # 1.3.2
 

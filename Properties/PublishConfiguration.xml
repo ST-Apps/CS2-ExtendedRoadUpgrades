@@ -1,0 +1,50 @@
+<Publish>
+  <!--Id must be set in order to update existed mod. it is not required for publishing mod for the first time-->
+  <ModId Value="76910" />
+  <!--Name of the mod to display to players-->
+  <DisplayName Value="Extended Road Upgrades" />
+  <!--Short description of the mod-->
+  <ShortDescription Value="Enables multiple upgrade options for your roads." />
+  <!--Long description of the mod. Single line or multi line. Supports minimal markdown subset-->
+  <LongDescription>## Description
+This mod enables some additional upgrade modes for your roads, giving you full control on the type of roads you can build without needing to precisely terraform beforehand.
+
+These upgrades are available in the in-game upgrade mode for roads and can be used exactly like any other upgrade mode (e.g. Grass or Wide Sidewalk).
+
+The mod currently supports the following modes:
+- Quay
+- Retaining Wall
+- Elevated
+- Tunnel
+
+These upgrades can be applied to:
+- Roads
+- Pedestrian Paths
+- Public Transport Roads
+- Train Tracks
+- Tram Tracks
+- Subway Tracks</LongDescription>
+  <!--Thumbnail-->
+  <Thumbnail Value="Properties/Thumbnail.png" />
+  <!--Screenshot, can be set multiple times-->
+  <Screenshot Value="Properties/Screenshots/Quay.png" />
+  <Screenshot Value="Properties/Screenshots/RetainingWall.png" />
+  <Screenshot Value="Properties/Screenshots/Elevated.png" />
+  <!--Tag, can be set multiple times-->
+  <Tag Value="Code Mod" />
+  <!--Link to the forum post where the mod can be discussed-->
+  <ForumLink Value="https://forum.paradoxplaza.com/forum/threads/extended-road-upgrades.1651035/" />
+  <!--Version of the mod-->
+  <ModVersion Value="1.4.0" />
+  <!--Recommended version of the base game to use the mod-->
+  <GameVersion Value="1.0.*" />
+  <!--Dependency for the mod, can be set multiple times-->
+  <Dependency Id="74417" DisplayName="Unified Icon Library" />
+  <!--Change log for new version. Single line or multi line. Supports minimal markdown subset-->
+  <ChangeLog># 1.3.2
+
+- [FIX] Mod not loading properly after v1.3.1</ChangeLog>
+  <!--External link. supported types are discord, github, youtube, twitch, x, paypal, patreon-->
+  <ExternalLink Type="github" Url="https://github.com/ST-Apps/CS2-ExtendedRoadUpgrades" />
+  <ExternalLink Type="paypal" Url="https://www.paypal.me/STApps" />
+</Publish>
