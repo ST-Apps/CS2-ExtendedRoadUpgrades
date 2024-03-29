@@ -3,7 +3,7 @@ This mod enables some additional upgrade modes for your roads, giving you full c
 
 These upgrades are available in the in-game upgrade mode for roads and can be used exactly like any other upgrade mode (e.g. Grass or Wide Sidewalk).
 
-The mod currentyl supports the following modes:
+The mod currently supports the following modes:
 - Quay
 - Retaining Wall
 - Elevated
