@@ -1,0 +1,8 @@
+﻿Assets.NAME[Quay]	护堤
+Assets.DESCRIPTION[Quay]	"护堤模式，为道路生成护堤。"
+Assets.NAME[RetainingWall]	挡土墙
+Assets.DESCRIPTION[RetainingWall]	"挡土墙模式，为道路生成挡土墙。"
+Assets.NAME[Elevated]	高架
+Assets.DESCRIPTION[Elevated]	"高架模式，将道路转换为一段高架道路。"
+Assets.NAME[Tunnel]	隧道
+Assets.DESCRIPTION[Tunnel]	"隧道模式，将道路转换为一段隧道。"

@@ -1,4 +1,4 @@
-![GitHub all releases](https://img.shields.io/github/downloads/ST-Apps/CS2-ExtendedRoadUpgrades/total)
+﻿![GitHub all releases](https://img.shields.io/github/downloads/ST-Apps/CS2-ExtendedRoadUpgrades/total)
 ![GitHub release (latest by SemVer including pre-releases)](https://img.shields.io/github/downloads-pre/ST-Apps/CS2-ExtendedRoadUpgrades/latest/total)
 ﻿[![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
 [![Static Badge](https://img.shields.io/badge/PayPal-donate-blue?logo=paypal&link=https%3A%2F%2Fpaypal.me%2FSTApps)](https://www.paypal.me/STApps)
@@ -14,9 +14,6 @@ This work is licensed under a
 
 # Cities: Skylines 2 - Extended Road Upgrades
 
-> [!IMPORTANT]  
-> We're in the early stages of C:S2 modding and the tooling is not ready yet so please take this mod as it is and accept any issue.
-
 This mod enables both **quays**, **retaining walls** and **elevated** upgrade options in the Network Upgrade tool.
 
 > [!WARNING]  
@@ -30,7 +27,7 @@ This mod enables some additional upgrade modes for your roads, giving you full c
 
 These upgrades are available in the in-game upgrade mode for roads and can be used exactly like any other upgrade mode (e.g. Grass or Wide Sidewalk).
 
-The mod currentyl supports the following modes:
+The mod currently supports the following modes:
 - Quay
 - Retaining Wall
 - Elevated
@@ -46,24 +43,12 @@ These upgrades can be applied to:
 
 # Setup
 
-Each release will contain 4 different download zips:
-- `ExtendedRoadUpgrades_<MOD VERSION>-BepInEx5.zip`
-- `ExtendedRoadUpgrades_<MOD VERSION>-BepInEx5_Debug.zip`
-- `ExtendedRoadUpgrades_<MOD VERSION>-BepInEx6.zip`
-- `ExtendedRoadUpgrades_<MOD VERSION>-BepInEx6_Debug.zip`
-
 > [!TIP]
-> `Debug` versions can be helpful to have extended logging in case of errors, they're not intended for daily usage
-
-Simply download the release that matches your BepInEx version from the [releases](https://github.com/ST-Apps/CS2-ExtendedRoadUpgrades/releases) page and extract the ZIP file to your `BepInEx/plugins` folder.
-
-## Requirements
+> Mod will now available on PDX Mods only, BepInEx is not a requirement anymore.
+> 
+> Just subscribe to the mod on PDX Mods and enjoy!
 
 - [Cities: Skylines 2](https://store.steampowered.com/app/949230/Cities_Skylines_II/)
-- BepInEx, either v5 or v6
-	- [BepInEx 5.4.22](https://github.com/BepInEx/BepInEx/releases/tag/v5.4.22)
-	- [BepInEx-Unity.Mono-win-x64-6.0.0-be.674+82077ec](https://builds.bepinex.dev/projects/bepinex_be)
-
 # Usage
 
 You will find new icons in the Road Upgrade menu, just after the _Grass_ one.

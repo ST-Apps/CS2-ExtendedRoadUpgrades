@@ -1,16 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.5.33530.505
+VisualStudioVersion = 17.9.34616.47
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtendedRoadUpgrades", "ExtendedRoadUpgrades.csproj", "{2B91C0A5-1610-47D6-8174-D658AA06D99C}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementi di soluzione", "Elementi di soluzione", "{A6EAD648-3288-4418-B262-237FA4B16B5F}"
-	ProjectSection(SolutionItems) = preProject
-		build.ps1 = build.ps1
-		icon.png = icon.png
-		manifest.json.template = manifest.json.template
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +20,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {F5461778-90D9-498A-902C-E47E5BF33BD5}
+		SolutionGuid = {D7B62732-E913-4A40-9FF2-911C5E1FE9C7}
 	EndGlobalSection
 EndGlobal
