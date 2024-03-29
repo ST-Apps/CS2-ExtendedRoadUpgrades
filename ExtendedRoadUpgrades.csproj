@@ -6,7 +6,7 @@
 		<Authors>ST-Apps</Authors>
 		<Copyright>Copyright © 2023-24 ST-Apps (github.com/ST-Apps). All rights reserved.</Copyright>
 		<Product>$(Title)</Product>
-		<Version>1.3.2</Version>
+		<Version>1.4.0</Version>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<TargetFramework>net472</TargetFramework>

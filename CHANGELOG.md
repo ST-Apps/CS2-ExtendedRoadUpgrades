@@ -2,6 +2,12 @@
 
 > Please see the official [issue tracker](https://github.com/ST-Apps/CS2-ExtendedRoadUpgrades/issues).
 
+# 1.4.0
+
+- [FIX] Improved handling for Raised roundabouts
+- [FIX] Improved handling for connected Tunnels
+- [ADD] Localization for ZH-HANS and ZH-HANT
+
 # 1.3.2
 
 - [FIX] Mod not loading properly after v1.3.1

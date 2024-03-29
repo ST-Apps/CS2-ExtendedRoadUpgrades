@@ -35,7 +35,7 @@ These upgrades can be applied to:
   <!--Link to the forum post where the mod can be discussed-->
   <ForumLink Value="https://forum.paradoxplaza.com/forum/threads/extended-road-upgrades.1651035/" />
   <!--Version of the mod-->
-  <ModVersion Value="1.3.2" />
+  <ModVersion Value="1.4.0" />
   <!--Recommended version of the base game to use the mod-->
   <GameVersion Value="1.0.*" />
   <!--Dependency for the mod, can be set multiple times-->
